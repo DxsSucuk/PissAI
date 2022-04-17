@@ -21,13 +21,13 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class Main {
+public class PissAI {
 
-    static Main instance;
+    static PissAI instance;
     ModelTrainer modelTrainer;
 
     public static void main(String[] args) throws Exception {
-        instance = new Main();
+        instance = new PissAI();
 
         instance.modelTrainer = new ModelTrainer();
 
