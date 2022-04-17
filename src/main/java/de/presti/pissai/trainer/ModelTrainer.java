@@ -49,7 +49,7 @@ public class ModelTrainer {
         return dataset;
     }
 
-    public Trainer getTrainer(Model model, ImageFolder dataset) throws IOException, TranslateException {
+    public Trainer getTrainer(Model model, ImageFolder dataset) throws IOException {
         dataset.prepare(new ProgressBar());
 
         DefaultTrainingConfig config = new DefaultTrainingConfig(Loss.softmaxCrossEntropyLoss())
