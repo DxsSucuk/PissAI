@@ -1,5 +1,6 @@
 # PissAI
-A DJL Algorithm used to detect if a Image contains a person such as Dream, Sapnap, George Not Found, TommyInnit, Tubbo or Ranboo. This Project has been created for a YouTube Video which is not yet finished, and neither is the Algorithm.
+##### Personal Individuality Security Service Artificial Intelligence
+A DJL Algorithm used to detect if an Image contains a person such as Dream, Sapnap, George Not Found, TommyInnit, Tubbo or Ranboo. This Project has been created for a YouTube Video which is not yet finished, and neither is the Algorithm nor the Discord Bot.
 
 # Inspiration
 https://www.reddit.com/r/Discord_Bots/comments/szd5dw/a_bot_that_auto_detects_and_ban_users_with_dream/

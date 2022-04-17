@@ -1,6 +1,7 @@
 package de.presti.pissai.trainer;
 
 import ai.djl.Application;
+import ai.djl.MalformedModelException;
 import ai.djl.Model;
 import ai.djl.basicdataset.cv.classification.ImageFolder;
 import ai.djl.modality.cv.transform.Resize;
@@ -22,6 +23,7 @@ import ai.djl.training.util.ProgressBar;
 import ai.djl.translate.TranslateException;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ModelTrainer {
@@ -59,11 +61,11 @@ public class ModelTrainer {
         return model.newTrainer(config);
     }
 
-    public Model getModel(ImageFolder dataset) throws TranslateException, IOException {
+    public Model getModel(ImageFolder dataset) throws TranslateException, IOException, MalformedModelException {
         return getModel(dataset.getSynset().size());
     }
 
-    public Model getModel(int outputSize) {
+    public Model getModel(int outputSize) throws MalformedModelException, IOException {
         long inputSize = 128 * 128 * 3;
 
         SequentialBlock sequentialBlock = new SequentialBlock();
@@ -75,8 +77,11 @@ public class ModelTrainer {
         sequentialBlock.add(Activation::relu);
         sequentialBlock.add(Linear.builder().setUnits(outputSize).build());
 
+
+        Path modelDir = Paths.get("datasets");
         Model model = Model.newInstance("mlp");
         model.setBlock(sequentialBlock);
+        model.load(modelDir);
 
         return model;
     }
