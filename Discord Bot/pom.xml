@@ -35,11 +35,12 @@
             <artifactId>discord-webhooks</artifactId>
             <version>0.8.0</version>
         </dependency>
+        <!-- Needed but InteliJ loads it from the Module list.
         <dependency>
             <groupId>com.github.DxsSucuk</groupId>
             <artifactId>PissAI</artifactId>
             <version>-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
 </project>

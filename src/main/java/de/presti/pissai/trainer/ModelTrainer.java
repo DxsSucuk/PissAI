@@ -15,7 +15,6 @@ import ai.djl.repository.Repository;
 import ai.djl.training.DefaultTrainingConfig;
 import ai.djl.training.EasyTrain;
 import ai.djl.training.Trainer;
-import ai.djl.training.dataset.ArrayDataset;
 import ai.djl.training.evaluator.Accuracy;
 import ai.djl.training.listener.TrainingListener;
 import ai.djl.training.loss.Loss;
@@ -87,7 +86,7 @@ public class ModelTrainer {
     }
 
     public void runTrainer(Trainer trainer, ImageFolder dataset, Model model) throws TranslateException, IOException {
-        int epochen = 1000;
+        int epochen = 10000;
         trainer.initialize(new Shape(128 * 128 * 3));
 
         EasyTrain.fit(trainer, epochen, dataset, null);
