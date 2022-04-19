@@ -2,6 +2,7 @@ package de.presti.pissai.discord;
 
 import de.presti.pissai.discord.bot.BotWorker;
 import de.presti.pissai.discord.bot.version.BotVersion;
+import de.presti.pissai.discord.events.EventHandler;
 import de.presti.pissai.main.PissAI;
 
 import java.util.logging.Logger;
@@ -28,6 +29,8 @@ public class Main {
         } catch (Exception exception) {
             instance.logger.severe("Couldn't create BotInstance, " + exception.getMessage());
         }
+
+        BotWorker.addEvent(new EventHandler());
 
     }
 

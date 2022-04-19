@@ -42,7 +42,13 @@ public class PissAI {
 
     public static void main(String[] args) throws Exception {
         create();
-        /* System.out.println("Starting Training!");
+
+        //startCreation();
+        instance.runTest(instance.model, instance.syncs);
+    }
+
+    public static void startCreation() throws Exception {
+        System.out.println("Starting Training!");
         long start = System.currentTimeMillis();
 
         Object[] newCreation = instance.createNew();
@@ -50,8 +56,7 @@ public class PissAI {
         Model model = (Model) newCreation[0];
         Trainer trainer = (Trainer) newCreation[1];
 
-        System.out.println("Finished in " + (System.currentTimeMillis() - start) + "ms!");*/
-        instance.runTest(instance.model, instance.getSyncs());
+        System.out.println("Finished in " + (System.currentTimeMillis() - start) + "ms!");
     }
 
     public Object[] createNew() throws Exception {
@@ -71,12 +76,13 @@ public class PissAI {
     }
 
     public void runTest(Model model, List<String> classes) throws IOException, TranslateException {
-        Image imageToCheck = ImageFactory.getInstance().fromUrl("https://media.discordapp.net/attachments/784122105905676318/965734105935401032/benacity-1.png");
+        String imageUrl = "https://cdn.discordapp.com/avatars/321580743488831490/fe6f07d55edc9842214dc9bef29a9a19.png?size=1024";
+        Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
         Object wrappedImage = imageToCheck.getWrappedImage();
 
         Translator<Image, Classifications> translator =
                 ImageClassificationTranslator.builder()
-                        .addTransform(new Resize(128, 128))
+                        .addTransform(new Resize(256, 256))
                         .addTransform(new ToTensor())
                         .optSynset(classes)
                         .optApplySoftmax(true)
@@ -118,7 +124,7 @@ public class PissAI {
 
         Translator<Image, Classifications> translator =
                 ImageClassificationTranslator.builder()
-                        .addTransform(new Resize(128, 128))
+                        .addTransform(new Resize(256, 256))
                         .addTransform(new ToTensor())
                         .optSynset(classes)
                         .optApplySoftmax(true)
