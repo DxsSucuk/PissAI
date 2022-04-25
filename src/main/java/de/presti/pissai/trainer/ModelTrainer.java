@@ -34,13 +34,13 @@ public class ModelTrainer {
     }
 
     public ImageFolder createDataSet() throws TranslateException, IOException {
-        int batchSize = 32;
+        int batchSize = 64;
         // set the image folder path
         Repository repository = Repository.newInstance("folder", Paths.get("imagefolder"));
         ImageFolder dataset =
                ImageFolder.builder()
                         .setRepository(repository)
-                        .addTransform(new Resize(128, 128))
+                        .addTransform(new Resize(256, 256))
                         .addTransform(new ToTensor())
                         .setSampling(batchSize, true)
                         .build();
@@ -60,19 +60,19 @@ public class ModelTrainer {
         return model.newTrainer(config);
     }
 
-    public Model getModel(ImageFolder dataset) throws TranslateException, IOException, MalformedModelException {
-        return getModel(dataset.getSynset().size());
+    public Model getModel(ImageFolder dataset, boolean create) throws TranslateException, IOException, MalformedModelException {
+        return getModel(dataset.getSynset().size(), create);
     }
 
-    public Model getModel(int outputSize) throws MalformedModelException, IOException {
-        long inputSize = 128 * 128 * 3;
+    public Model getModel(int outputSize, boolean create) throws MalformedModelException, IOException {
+        long inputSize = 256 * 256 * 3;
 
         SequentialBlock sequentialBlock = new SequentialBlock();
 
         sequentialBlock.add(Blocks.batchFlattenBlock(inputSize));
-        sequentialBlock.add(Linear.builder().setUnits(128).build());
+        sequentialBlock.add(Linear.builder().setUnits(256).build());
         sequentialBlock.add(Activation::relu);
-        sequentialBlock.add(Linear.builder().setUnits(64).build());
+        sequentialBlock.add(Linear.builder().setUnits(128).build());
         sequentialBlock.add(Activation::relu);
         sequentialBlock.add(Linear.builder().setUnits(outputSize).build());
 
@@ -80,14 +80,14 @@ public class ModelTrainer {
         Path modelDir = Paths.get("datasets");
         Model model = Model.newInstance("mlp");
         model.setBlock(sequentialBlock);
-        model.load(modelDir);
+        if (!create) model.load(modelDir);
 
         return model;
     }
 
     public void runTrainer(Trainer trainer, ImageFolder dataset, Model model) throws TranslateException, IOException {
-        int epochen = 10000;
-        trainer.initialize(new Shape(128 * 128 * 3));
+        int epochen = 10;
+        trainer.initialize(new Shape(256 * 256 * 3));
 
         EasyTrain.fit(trainer, epochen, dataset, null);
 

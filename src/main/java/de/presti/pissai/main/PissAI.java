@@ -18,9 +18,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.presti.pissai.trainer.ModelTrainer;
+import de.presti.pissai.utils.TimeUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PissAI {
@@ -37,17 +39,18 @@ public class PissAI {
         instance.modelTrainer = new ModelTrainer();
         instance.imageFolder = instance.modelTrainer.createDataSet();
         instance.syncs = instance.imageFolder.getSynset();
-        instance.model = instance.modelTrainer.getModel(instance.imageFolder);
+        instance.model = instance.modelTrainer.getModel(instance.imageFolder, false);
     }
 
     public static void main(String[] args) throws Exception {
-        create();
-
-        //startCreation();
-        instance.runTest(instance.model, instance.syncs);
+        // create();
+        startCreation();
+        //instance.runTest(instance.model, instance.syncs);
     }
 
     public static void startCreation() throws Exception {
+        if (instance == null) instance = new PissAI();
+        if (instance.modelTrainer == null) instance.modelTrainer = new ModelTrainer();
         System.out.println("Starting Training!");
         long start = System.currentTimeMillis();
 
@@ -56,13 +59,17 @@ public class PissAI {
         Model model = (Model) newCreation[0];
         Trainer trainer = (Trainer) newCreation[1];
 
-        System.out.println("Finished in " + (System.currentTimeMillis() - start) + "ms!");
+        long finishTime = System.currentTimeMillis() - start;
+        Date finishDate = new Date(finishTime);
+
+        System.out.println("Finished in " + finishTime + "ms!");
+        System.out.println("That is about, " + TimeUtil.getTime(start));
     }
 
     public Object[] createNew() throws Exception {
         ImageFolder imageFolder = instance.modelTrainer.createDataSet();
 
-        Model model = instance.modelTrainer.getModel(imageFolder);
+        Model model = instance.modelTrainer.getModel(imageFolder, true);
 
         Trainer trainer = instance.modelTrainer.getTrainer(model, imageFolder);
 
@@ -72,7 +79,7 @@ public class PissAI {
     }
 
     public Model loadPrevious() throws MalformedModelException, IOException {
-        return instance.modelTrainer.getModel(7);
+        return instance.modelTrainer.getModel(7, false);
     }
 
     public void runTest(Model model, List<String> classes) throws IOException, TranslateException {
