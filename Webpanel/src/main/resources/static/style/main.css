@@ -1,0 +1,27 @@
+body {
+    background-color: black;
+    font-family: "Poppins", system-ui;
+    font-size: 30px;
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+a.btn {
+    text-decoration: none;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 30px;
+    margin:0  15px;
+}
+
+.accept-button {
+    background-color: forestgreen;
+}
+
+.reject-button {
+    background-color: darkred;
+}
