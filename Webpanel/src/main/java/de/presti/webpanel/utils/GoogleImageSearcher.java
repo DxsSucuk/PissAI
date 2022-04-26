@@ -21,6 +21,8 @@ public class GoogleImageSearcher {
     static String googleKey = "AIzaSyDtQBOPVnlcPlEuevIyW0nmF1PX3wb-Nqo", engineId = "7afbd8503f9d5c7d9";
 
     static List<String> list = new ArrayList<>();
+    static int currentIndex = 0;
+    static int keyRetries = 0;
 
     public GoogleImageSearcher() {
         list.add("AIzaSyDbNx9Uxw8SYMzAA3QcvFZjGfRbexvZJnU");
@@ -43,11 +45,18 @@ public class GoogleImageSearcher {
 
             String content = httpResponse.body();
 
-            if (httpResponse.statusCode() != 200) {
+            if (httpResponse.statusCode() == 429 && keyRetries <= 2) {
+                System.out.println("Retry with new Keys!");
                 selectNewKeyWithID();
+                keyRetries++;
                 return searchForImage(query);
+            } else if (httpResponse.statusCode() != 200 && httpResponse.statusCode() != 429) {
+                System.out.println(httpResponse.statusCode() + " - " + content);
+            } else if (httpResponse.statusCode() == 429) {
+                return "https://utils.ree6.de/pissai/googleIssue.png";
             }
 
+            keyRetries = 0;
             JsonElement jsonElement = JsonParser.parseString(content);
             if (jsonElement.isJsonObject()) {
                 JsonObject rootObject = jsonElement.getAsJsonObject();
@@ -55,8 +64,11 @@ public class GoogleImageSearcher {
                     JsonArray jsonArray = rootObject.getAsJsonArray("items");
                     String url = getRandomLink(jsonArray);
 
-                    while (WebpanelApplication.getInstance().getSqlConnector().getSqlWorker().urlEntryExists(url)) {
+                    int retry = 0;
+
+                    while (WebpanelApplication.getInstance().getSqlConnector().getSqlWorker().urlEntryExists(url) && retry <= 5) {
                         url = getRandomLink(jsonArray);
+                        retry++;
                     }
 
                     return url;
@@ -69,13 +81,15 @@ public class GoogleImageSearcher {
     }
 
     private static void selectNewKeyWithID() {
-        String data = list.get(new Random().nextInt(list.size() - 1));
+        if (currentIndex >= list.size()) currentIndex = 0;
+        String data = list.get(currentIndex);
 
         if (data.equalsIgnoreCase(googleKey)) {
             selectNewKeyWithID();
             return;
         }
 
+        currentIndex++;
         googleKey = data;
     }
 
