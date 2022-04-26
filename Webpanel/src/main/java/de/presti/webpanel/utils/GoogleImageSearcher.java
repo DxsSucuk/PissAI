@@ -1,4 +1,4 @@
-package de.presti.webpanel;
+package de.presti.webpanel.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GoogleImageSearcher {
 
     static HttpClient httpClient = HttpClient.newHttpClient();
-    static String googleKey = "", engineId = "7afbd8503f9d5c7d9";
+    static String googleKey = "AIzaSyDtQBOPVnlcPlEuevIyW0nmF1PX3wb-Nqo", engineId = "7afbd8503f9d5c7d9";
 
     public static String searchForImage(String query) {
         try {
