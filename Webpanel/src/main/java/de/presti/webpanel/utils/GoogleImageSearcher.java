@@ -10,12 +10,21 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GoogleImageSearcher {
 
     static HttpClient httpClient = HttpClient.newHttpClient();
     static String googleKey = "AIzaSyDtQBOPVnlcPlEuevIyW0nmF1PX3wb-Nqo", engineId = "7afbd8503f9d5c7d9";
+
+    static List<String[]> list = new ArrayList<>();
+
+    public GoogleImageSearcher() {
+        list.add(new String[]{"apiKey", "engineId"});
+    }
 
     public static String searchForImage(String query) {
         try {
@@ -31,6 +40,11 @@ public class GoogleImageSearcher {
             HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
             String content = httpResponse.body();
+
+            if (httpResponse.statusCode() == 429) {
+                selectNewKeyWithID();
+                return searchForImage(query);
+            }
 
             JsonElement jsonElement = JsonParser.parseString(content);
             if (jsonElement.isJsonObject()) {
@@ -50,6 +64,18 @@ public class GoogleImageSearcher {
             exception.printStackTrace();
         }
         return "";
+    }
+
+    private static void selectNewKeyWithID() {
+        String[] data = list.get(new Random().nextInt(list.size() - 1));
+
+        if (data[0].equalsIgnoreCase(googleKey)) {
+            selectNewKeyWithID();
+            return;
+        }
+
+        googleKey = data[0];
+        engineId = data[1];
     }
 
     private static String getRandomLink(JsonArray jsonArray) {

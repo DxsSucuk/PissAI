@@ -92,6 +92,9 @@ public class SQLConnector {
         // Registering the tables and values.
         tables.put("URL", "(Id int NOT NULL AUTO_INCREMENT, URL VARCHAR(500) NOT NULL, PERSON VARCHAR(50) NOT NULL, PRIMARY KEY(Id))");
 
+        // Registering the tables and values.
+        tables.put("USERS", "(Id int NOT NULL AUTO_INCREMENT, TOKEN VARCHAR(500) NOT NULL, AMOUNT int NOT NULL, PRIMARY KEY(Id))");
+
         // Iterating through all table presets.
         for (Map.Entry<String, String> entry : tables.entrySet()) {
 

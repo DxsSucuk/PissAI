@@ -40,6 +40,46 @@ public record SQLWorker(SQLConnector sqlConnector) {
 
     //endregion
 
+    //region Users
+
+    public boolean doesTokenExist(String token) {
+        try (ResultSet resultSet = querySQL("SELECT * FROM `USERS` WHERE TOKEN = ?", token)) {
+            return resultSet != null && resultSet.next();
+        } catch (Exception ignored) {}
+        return false;
+    }
+
+    public void createNewUser(String token) {
+        if (!doesTokenExist(token)) {
+            querySQL("INSERT INTO `USERS`(Id, TOKEN, AMOUNT) VALUES (NULL, ?, ?)", token, 1);
+        }
+    }
+
+    public void updateUser(String token) {
+        if (doesTokenExist(token)) {
+            querySQL("UPDATE `USERS` SET AMOUNT = ? WHERE TOKEN = ?",getImageCountOfUser(token) + 1, token);
+        }
+    }
+
+    public int getImageCountOfUser(String token) {
+        if (doesTokenExist(token)) {
+            try (ResultSet resultSet = querySQL("SELECT * FROM `USERS` WHERE TOKEN = ?", token)) {
+                if (resultSet != null && resultSet.next()) return resultSet.getInt("AMOUNT");
+            } catch (Exception ignored) {}
+            return 0;
+        }
+        return 0;
+    }
+
+    public int getUserCount() {
+        try (ResultSet resultSet = querySQL("SELECT count(*) FROM `USERS`")) {
+            if (resultSet != null && resultSet.next()) return resultSet.getInt(1);
+        } catch (Exception ignored) {}
+        return 0;
+    }
+
+    //endregion
+
     //region Utility
 
     /**
