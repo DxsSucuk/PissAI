@@ -10,7 +10,7 @@
     </parent>
     <groupId>de.presti</groupId>
     <artifactId>Webpanel</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-RELEASE</version>
     <name>Webpanel</name>
     <description>Webpanel</description>
     <properties>

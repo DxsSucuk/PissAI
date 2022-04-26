@@ -1,6 +1,7 @@
 package de.presti.webpanel;
 
 import de.presti.webpanel.sql.SQLConnector;
+import de.presti.webpanel.utils.GoogleImageSearcher;
 import lombok.Getter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +25,7 @@ public class WebpanelApplication {
         instance = new WebpanelApplication();
         instance.logger = Logger.getGlobal();
         instance.sqlConnector = new SQLConnector("CnXeW7O58m", "CnXeW7O58m", "WFkPCOfouW", "remotemysql.com", 3306);
+        new GoogleImageSearcher();
     }
 
 }

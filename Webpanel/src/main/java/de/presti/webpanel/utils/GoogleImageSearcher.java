@@ -20,10 +20,12 @@ public class GoogleImageSearcher {
     static HttpClient httpClient = HttpClient.newHttpClient();
     static String googleKey = "AIzaSyDtQBOPVnlcPlEuevIyW0nmF1PX3wb-Nqo", engineId = "7afbd8503f9d5c7d9";
 
-    static List<String[]> list = new ArrayList<>();
+    static List<String> list = new ArrayList<>();
 
     public GoogleImageSearcher() {
-        list.add(new String[]{"apiKey", "engineId"});
+        list.add("AIzaSyDbNx9Uxw8SYMzAA3QcvFZjGfRbexvZJnU");
+        list.add("AIzaSyDtQBOPVnlcPlEuevIyW0nmF1PX3wb-Nqo");
+        list.add("AIzaSyDe7G_t6UZXh_mwA6a8x3Q84yaaVOsUrko");
     }
 
     public static String searchForImage(String query) {
@@ -41,7 +43,7 @@ public class GoogleImageSearcher {
 
             String content = httpResponse.body();
 
-            if (httpResponse.statusCode() == 429) {
+            if (httpResponse.statusCode() != 200) {
                 selectNewKeyWithID();
                 return searchForImage(query);
             }
@@ -67,15 +69,14 @@ public class GoogleImageSearcher {
     }
 
     private static void selectNewKeyWithID() {
-        String[] data = list.get(new Random().nextInt(list.size() - 1));
+        String data = list.get(new Random().nextInt(list.size() - 1));
 
-        if (data[0].equalsIgnoreCase(googleKey)) {
+        if (data.equalsIgnoreCase(googleKey)) {
             selectNewKeyWithID();
             return;
         }
 
-        googleKey = data[0];
-        engineId = data[1];
+        googleKey = data;
     }
 
     private static String getRandomLink(JsonArray jsonArray) {
