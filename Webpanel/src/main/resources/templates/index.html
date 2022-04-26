@@ -75,8 +75,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4" style="text-align: center;"><img class="img-fluid" th:src="${image}" height="256" width="256"
-                                                               style="text-align: center;"></div>
+        <div class="col-md-4" style="text-align: center;">
+            <img th:if="${!image.equalsIgnoreCase('https://utils.ree6.de/pissai/googleIssue.png') && !image.equalsIgnoreCase('https://utils.ree6.de/pissai/googleIssue2.png')}" class="img-fluid" th:src="${image}" height="256" width="256" style="text-align: center;">
+            <img th:if="${image.equalsIgnoreCase('https://utils.ree6.de/pissai/googleIssue.png') || image.equalsIgnoreCase('https://utils.ree6.de/pissai/googleIssue2.png')}" class="img-fluid" th:src="${image}" style="text-align: center;">
+        </div>
         <div class="col-md-4">
             <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
                 <div class="bs-icon-xl bs-icon-circle bs-icon-primary d-flex flex-shrink-0 justify-content-center align-items-center d-inline-block mb-2 bs-icon lg">

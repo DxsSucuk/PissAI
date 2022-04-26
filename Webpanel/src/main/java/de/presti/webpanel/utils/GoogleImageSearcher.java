@@ -52,6 +52,7 @@ public class GoogleImageSearcher {
                 return searchForImage(query);
             } else if (httpResponse.statusCode() != 200 && httpResponse.statusCode() != 429) {
                 System.out.println(httpResponse.statusCode() + " - " + content);
+                return "https://utils.ree6.de/pissai/googleIssue2.png";
             } else if (httpResponse.statusCode() == 429) {
                 return "https://utils.ree6.de/pissai/googleIssue.png";
             }
