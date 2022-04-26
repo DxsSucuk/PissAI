@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.presti.webpanel.WebpanelApplication;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -36,17 +37,28 @@ public class GoogleImageSearcher {
                 JsonObject rootObject = jsonElement.getAsJsonObject();
                 if (rootObject.has("items") && rootObject.get("items").isJsonArray()) {
                     JsonArray jsonArray = rootObject.getAsJsonArray("items");
+                    String url = getRandomLink(jsonArray);
 
-                    JsonElement jsonElement1 = jsonArray.get(ThreadLocalRandom.current().nextInt(jsonArray.size() - 1));
-                    if (jsonElement1.isJsonObject()) {
-                        JsonObject jsonObject = jsonElement1.getAsJsonObject();
-                        return jsonObject.has("link") ? jsonObject.get("link").getAsString() : "";
+                    while (WebpanelApplication.getInstance().getSqlConnector().getSqlWorker().urlEntryExists(url)) {
+                        url = getRandomLink(jsonArray);
                     }
+
+                    return url;
                 }
             }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return "";
+    }
+
+    private static String getRandomLink(JsonArray jsonArray) {
+        JsonElement jsonElement1 = jsonArray.get(ThreadLocalRandom.current().nextInt(jsonArray.size() - 1));
+        if (jsonElement1.isJsonObject()) {
+            JsonObject jsonObject = jsonElement1.getAsJsonObject();
+            return jsonObject.has("link") ? jsonObject.get("link").getAsString() : "";
+        }
+
         return "";
     }
 
