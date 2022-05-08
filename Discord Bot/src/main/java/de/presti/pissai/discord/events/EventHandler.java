@@ -78,8 +78,15 @@ public class EventHandler extends ListenerAdapter {
                                 } catch (Exception ignored) {}
                             }
 
-                            if (user != null)
-                                guild.kick(user).queue();
+                            if (user != null) {
+                                try {
+                                    JsonObject jsonObject2 = PissAI.getInstance().checkImage(ImageFactory.getInstance().fromUrl(event.getUser().getAvatarUrl()), PissAI.getInstance().getModel(), PissAI.getInstance().getSyncs());
+
+                                    if (jsonObject2.has("probability") && jsonObject2.get("probability").getAsFloat() >= 0.87 && jsonObject2.has("className")) {
+                                        guild.kick(user).queue();
+                                    }
+                                } catch (Exception ignored) {}
+                            }
                         });
 
                         userCheckThread.setName(event.getUser().getId() + "-CheckerThread");

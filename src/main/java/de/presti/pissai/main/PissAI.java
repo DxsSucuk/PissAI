@@ -22,7 +22,6 @@ import de.presti.pissai.utils.TimeUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class PissAI {
@@ -43,9 +42,9 @@ public class PissAI {
     }
 
     public static void main(String[] args) throws Exception {
-        // create();
-        startCreation();
-        //instance.runTest(instance.model, instance.syncs);
+        // startCreation();
+        create();
+        instance.runTest(instance.model, instance.syncs);
     }
 
     public static void startCreation() throws Exception {
@@ -60,7 +59,6 @@ public class PissAI {
         Trainer trainer = (Trainer) newCreation[1];
 
         long finishTime = System.currentTimeMillis() - start;
-        Date finishDate = new Date(finishTime);
 
         System.out.println("Finished in " + finishTime + "ms!");
         System.out.println("That is about, " + TimeUtil.getTime(start));
@@ -79,11 +77,11 @@ public class PissAI {
     }
 
     public Model loadPrevious() throws MalformedModelException, IOException {
-        return instance.modelTrainer.getModel(7, false);
+        return instance.modelTrainer.getModel(getSyncs().size(), false);
     }
 
     public void runTest(Model model, List<String> classes) throws IOException, TranslateException {
-        String imageUrl = "https://cdn.discordapp.com/avatars/321580743488831490/fe6f07d55edc9842214dc9bef29a9a19.png?size=1024";
+        String imageUrl = "https://media.istockphoto.com/photos/red-old-matte-grunge-faded-adobe-plaster-texture-abstract-cement-picture-id1299674661?b=1&k=20&m=1299674661&s=170667a&w=0&h=TI7PCc8wsK7eaL7bLFwLQJ8w0b1uR5JiYubOSy9OaKk=";
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
         Object wrappedImage = imageToCheck.getWrappedImage();
 

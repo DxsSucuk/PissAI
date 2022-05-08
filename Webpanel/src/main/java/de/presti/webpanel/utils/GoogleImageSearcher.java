@@ -67,7 +67,7 @@ public class GoogleImageSearcher {
 
                     int retry = 0;
 
-                    while (WebpanelApplication.getInstance().getSqlConnector().getSqlWorker().urlEntryExists(url) && retry <= 5) {
+                    while (WebpanelApplication.getInstance().getSqlConnector().getSqlWorker().urlEntryExists(url) && retry <= 10) {
                         url = getRandomLink(jsonArray);
                         retry++;
                     }

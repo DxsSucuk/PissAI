@@ -102,7 +102,7 @@ public class TimeUtil {
         }
 
         if (m != 0) {
-            end += m + " Minutes" + (s != 0 ? "and " : "");
+            end += m + " Minutes" + (s != 0 ? " and " : "");
         }
 
         if (s != 0) {

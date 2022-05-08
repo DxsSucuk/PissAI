@@ -15,6 +15,7 @@ import ai.djl.repository.Repository;
 import ai.djl.training.DefaultTrainingConfig;
 import ai.djl.training.EasyTrain;
 import ai.djl.training.Trainer;
+import ai.djl.training.TrainingConfig;
 import ai.djl.training.evaluator.Accuracy;
 import ai.djl.training.listener.TrainingListener;
 import ai.djl.training.loss.Loss;
@@ -33,8 +34,25 @@ public class ModelTrainer {
         application = Application.CV.IMAGE_CLASSIFICATION;
     }
 
+    public ImageFolder getValidationDataSet() throws TranslateException, IOException {
+        int batchSize = 32;
+        // set the image folder path
+        Repository repository = Repository.newInstance("folder", Paths.get("validation"));
+        ImageFolder dataset =
+                ImageFolder.builder()
+                        .setRepository(repository)
+                        .addTransform(new Resize(256, 256))
+                        .addTransform(new ToTensor())
+                        .setSampling(batchSize, true)
+                        .build();
+        // call prepare before using
+        dataset.prepare();
+
+        return dataset;
+    }
+
     public ImageFolder createDataSet() throws TranslateException, IOException {
-        int batchSize = 64;
+        int batchSize = 32;
         // set the image folder path
         Repository repository = Repository.newInstance("folder", Paths.get("imagefolder"));
         ImageFolder dataset =
@@ -53,7 +71,7 @@ public class ModelTrainer {
     public Trainer getTrainer(Model model, ImageFolder dataset) throws IOException {
         dataset.prepare(new ProgressBar());
 
-        DefaultTrainingConfig config = new DefaultTrainingConfig(Loss.softmaxCrossEntropyLoss())
+        TrainingConfig config = new DefaultTrainingConfig(Loss.softmaxCrossEntropyLoss())
                 .addEvaluator(new Accuracy())
                 .addTrainingListeners(TrainingListener.Defaults.logging());
 
@@ -76,7 +94,6 @@ public class ModelTrainer {
         sequentialBlock.add(Activation::relu);
         sequentialBlock.add(Linear.builder().setUnits(outputSize).build());
 
-
         Path modelDir = Paths.get("datasets");
         Model model = Model.newInstance("mlp");
         model.setBlock(sequentialBlock);
@@ -86,7 +103,8 @@ public class ModelTrainer {
     }
 
     public void runTrainer(Trainer trainer, ImageFolder dataset, Model model) throws TranslateException, IOException {
-        int epochen = 10;
+        int epochen = 100;
+        System.out.println("Using about " + epochen + " Epochs on " + dataset.size() + " Images.");
         trainer.initialize(new Shape(256 * 256 * 3));
 
         EasyTrain.fit(trainer, epochen, dataset, null);
