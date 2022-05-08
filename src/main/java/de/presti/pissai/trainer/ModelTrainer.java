@@ -71,7 +71,7 @@ public class ModelTrainer {
     public Trainer getTrainer(Model model, ImageFolder dataset) throws IOException {
         dataset.prepare(new ProgressBar());
 
-        TrainingConfig config = new DefaultTrainingConfig(Loss.softmaxCrossEntropyLoss())
+        TrainingConfig config = new DefaultTrainingConfig(Loss.sigmoidBinaryCrossEntropyLoss())
                 .addEvaluator(new Accuracy())
                 .addTrainingListeners(TrainingListener.Defaults.logging());
 
@@ -103,7 +103,7 @@ public class ModelTrainer {
     }
 
     public void runTrainer(Trainer trainer, ImageFolder dataset, Model model) throws TranslateException, IOException {
-        int epochen = 100;
+        int epochen = (int) dataset.size();
         System.out.println("Using about " + epochen + " Epochs on " + dataset.size() + " Images.");
         trainer.initialize(new Shape(256 * 256 * 3));
 
