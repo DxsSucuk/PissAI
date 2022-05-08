@@ -81,7 +81,7 @@ public class PissAI {
     }
 
     public void runTest(Model model, List<String> classes) throws IOException, TranslateException {
-        String imageUrl = "https://media.istockphoto.com/photos/red-old-matte-grunge-faded-adobe-plaster-texture-abstract-cement-picture-id1299674661?b=1&k=20&m=1299674661&s=170667a&w=0&h=TI7PCc8wsK7eaL7bLFwLQJ8w0b1uR5JiYubOSy9OaKk=";
+        String imageUrl = "https://images.mein-mmo.de/medien/2021/06/Minecraft-Dream.v1-780x438.jpg";
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
         Object wrappedImage = imageToCheck.getWrappedImage();
 
