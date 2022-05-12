@@ -10,6 +10,10 @@ import ai.djl.modality.cv.ImageFactory;
 import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
 import ai.djl.modality.cv.translator.ImageClassificationTranslator;
+import ai.djl.modality.cv.util.NDImageUtils;
+import ai.djl.ndarray.NDArray;
+import ai.djl.ndarray.NDManager;
+import ai.djl.nn.LambdaBlock;
 import ai.djl.training.Trainer;
 import ai.djl.translate.TranslateException;
 import ai.djl.translate.Translator;
@@ -43,8 +47,12 @@ public class PissAI {
 
     public static void main(String[] args) throws Exception {
         // startCreation();
+        test(false);
+    }
+
+    public static void test(boolean valid) throws TranslateException, IOException, MalformedModelException {
         create();
-        instance.runTest(instance.model, instance.syncs);
+        instance.runTest(instance.model, instance.syncs, valid);
     }
 
     public static void startCreation() throws Exception {
@@ -80,15 +88,19 @@ public class PissAI {
         return instance.modelTrainer.getModel(getSyncs().size(), false);
     }
 
-    public void runTest(Model model, List<String> classes) throws IOException, TranslateException {
-        String imageUrl = "https://images.mein-mmo.de/medien/2021/06/Minecraft-Dream.v1-780x438.jpg";
+    public void runTest(Model model, List<String> classes, boolean valid) throws IOException, TranslateException {
+        String validImage = "https://images.mein-mmo.de/medien/2021/06/Minecraft-Dream.v1-780x438.jpg";
+        String invalidImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Red.svg/2048px-Red.svg.png";
+        String imageUrl = valid ? validImage : invalidImage;
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
+        imageToCheck = ImageFactory.getInstance().fromNDArray(imageToCheck.toNDArray(NDManager.newBaseManager()).squeeze());
         Object wrappedImage = imageToCheck.getWrappedImage();
 
         Translator<Image, Classifications> translator =
                 ImageClassificationTranslator.builder()
                         .addTransform(new Resize(256, 256))
                         .addTransform(new ToTensor())
+                        .addTransform(NDArray::squeeze)
                         .optSynset(classes)
                         .optApplySoftmax(true)
                         .build();

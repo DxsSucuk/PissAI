@@ -6,9 +6,11 @@ import ai.djl.Model;
 import ai.djl.basicdataset.cv.classification.ImageFolder;
 import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
+import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.types.Shape;
 import ai.djl.nn.Activation;
 import ai.djl.nn.Blocks;
+import ai.djl.nn.LambdaBlock;
 import ai.djl.nn.SequentialBlock;
 import ai.djl.nn.core.Linear;
 import ai.djl.repository.Repository;
@@ -17,6 +19,7 @@ import ai.djl.training.EasyTrain;
 import ai.djl.training.Trainer;
 import ai.djl.training.TrainingConfig;
 import ai.djl.training.evaluator.Accuracy;
+import ai.djl.training.evaluator.BinaryAccuracy;
 import ai.djl.training.listener.TrainingListener;
 import ai.djl.training.loss.Loss;
 import ai.djl.training.util.ProgressBar;
@@ -72,7 +75,7 @@ public class ModelTrainer {
         dataset.prepare(new ProgressBar());
 
         TrainingConfig config = new DefaultTrainingConfig(Loss.sigmoidBinaryCrossEntropyLoss())
-                .addEvaluator(new Accuracy())
+                .addEvaluator(new BinaryAccuracy())
                 .addTrainingListeners(TrainingListener.Defaults.logging());
 
         return model.newTrainer(config);
@@ -93,11 +96,13 @@ public class ModelTrainer {
         sequentialBlock.add(Linear.builder().setUnits(128).build());
         sequentialBlock.add(Activation::relu);
         sequentialBlock.add(Linear.builder().setUnits(outputSize).build());
+        sequentialBlock.add(LambdaBlock.singleton(NDArray::squeeze));
 
         Path modelDir = Paths.get("datasets");
         Model model = Model.newInstance("mlp");
         model.setBlock(sequentialBlock);
         if (!create) model.load(modelDir);
+        ;
 
         return model;
     }
