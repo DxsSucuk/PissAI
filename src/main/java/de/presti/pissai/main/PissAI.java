@@ -9,6 +9,7 @@ import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
 import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
+import ai.djl.modality.cv.translator.BaseImageTranslator;
 import ai.djl.modality.cv.translator.ImageClassificationTranslator;
 import ai.djl.modality.cv.util.NDImageUtils;
 import ai.djl.ndarray.NDArray;
@@ -21,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.presti.pissai.trainer.BinaryImageTranslator;
 import de.presti.pissai.trainer.ModelTrainer;
 import de.presti.pissai.utils.TimeUtil;
 
@@ -47,7 +49,7 @@ public class PissAI {
 
     public static void main(String[] args) throws Exception {
         // startCreation();
-        test(false);
+        test(true);
     }
 
     public static void test(boolean valid) throws TranslateException, IOException, MalformedModelException {
@@ -81,7 +83,7 @@ public class PissAI {
 
         instance.modelTrainer.runTrainer(trainer, imageFolder, model);
 
-        return new Object[] {model, trainer};
+        return new Object[]{model, trainer};
     }
 
     public Model loadPrevious() throws MalformedModelException, IOException {
@@ -89,26 +91,25 @@ public class PissAI {
     }
 
     public void runTest(Model model, List<String> classes, boolean valid) throws IOException, TranslateException {
-        String validImage = "https://images.mein-mmo.de/medien/2021/06/Minecraft-Dream.v1-780x438.jpg";
+        String validImage = "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Dream_icon.svg/1200px-Dream_icon.svg.png";
         String invalidImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Red.svg/2048px-Red.svg.png";
         String imageUrl = valid ? validImage : invalidImage;
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
         imageToCheck = ImageFactory.getInstance().fromNDArray(imageToCheck.toNDArray(NDManager.newBaseManager()).squeeze());
         Object wrappedImage = imageToCheck.getWrappedImage();
 
-        Translator<Image, Classifications> translator =
-                ImageClassificationTranslator.builder()
+        Translator<Image, Float> translator =
+                BinaryImageTranslator.builder()
                         .addTransform(new Resize(256, 256))
                         .addTransform(new ToTensor())
                         .addTransform(NDArray::squeeze)
-                        .optSynset(classes)
                         .optApplySoftmax(true)
                         .build();
 
-        Predictor<Image, Classifications> predictor = model.newPredictor(translator);
+        Predictor<Image, Float> predictor = model.newPredictor(translator);
 
-        Classifications classifications = predictor.predict(imageToCheck);
-        JsonElement jsonElement = JsonParser.parseString(classifications.toJson());
+        float classifications = predictor.predict(imageToCheck);
+        /*JsonElement jsonElement = JsonParser.parseString(classifications.toJson());
 
         if (jsonElement.isJsonArray()) {
             JsonArray jsonArray = jsonElement.getAsJsonArray();
@@ -131,10 +132,10 @@ public class PissAI {
                         detected = name;
                     }
                 }
-            }
+              }
+            }*/
 
-            System.out.println("It is most likely " + detected + ", about " + Math.round(highestValue * 100) + "%");
-        }
+        System.out.println("It is most likely dream, about " + Math.round(classifications * 100) + "%");
     }
 
     public JsonObject checkImage(Image image, Model model, List<String> classes) throws TranslateException {
