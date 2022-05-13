@@ -8,26 +8,28 @@ import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.types.Shape;
-import ai.djl.nn.Activation;
-import ai.djl.nn.Blocks;
-import ai.djl.nn.LambdaBlock;
-import ai.djl.nn.SequentialBlock;
+import ai.djl.nn.*;
 import ai.djl.nn.core.Linear;
 import ai.djl.repository.Repository;
 import ai.djl.training.DefaultTrainingConfig;
 import ai.djl.training.EasyTrain;
 import ai.djl.training.Trainer;
 import ai.djl.training.TrainingConfig;
-import ai.djl.training.evaluator.Accuracy;
 import ai.djl.training.evaluator.BinaryAccuracy;
+import ai.djl.training.initializer.Initializer;
+import ai.djl.training.initializer.XavierInitializer;
 import ai.djl.training.listener.TrainingListener;
 import ai.djl.training.loss.Loss;
+import ai.djl.training.optimizer.Optimizer;
+import ai.djl.training.tracker.Tracker;
+import ai.djl.training.tracker.WarmUpTracker;
 import ai.djl.training.util.ProgressBar;
 import ai.djl.translate.TranslateException;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class ModelTrainer {
 
@@ -71,11 +73,44 @@ public class ModelTrainer {
         return dataset;
     }
 
-    public Trainer getTrainer(Model model, ImageFolder dataset) throws IOException {
+    public Trainer getTrainer(Model model, ImageFolder dataset, int[] epochs, int batch) throws IOException {
         dataset.prepare(new ProgressBar());
+
+        int[] steps = Arrays
+                .stream(epochs)
+                .map(k -> k * 60000 / batch).toArray();
+
+        //initialize neural network weights using Xavier initializer
+        Initializer initializer = new XavierInitializer(
+                XavierInitializer.RandomType.UNIFORM,
+                XavierInitializer.FactorType.AVG, 2);
+
+        //set the learning rate
+        //adjusts weights of network based on loss
+        WarmUpTracker learningRateTracker = Tracker.warmUp().setMainTracker(Tracker.multiFactor()
+                        .setSteps(steps)
+                        .setBaseValue(0.01f)
+                        .optFactor(0.1f).build())
+                .optWarmUpBeginValue(1e-3f)
+                .optWarmUpSteps(500)
+                .build();
+
+        //set optimization technique
+        //minimizes loss to produce better and faster results
+        //Stochastic gradient descent
+        Optimizer optimizer = Optimizer
+                .sgd()
+                .setRescaleGrad(1.0f / batch)
+                .setLearningRateTracker(learningRateTracker)
+                .optMomentum(0.9f)
+                .optWeightDecays(0.001f)
+                .optClipGrad(1f)
+                .build();
 
         TrainingConfig config = new DefaultTrainingConfig(Loss.sigmoidBinaryCrossEntropyLoss())
                 .addEvaluator(new BinaryAccuracy())
+                .optOptimizer(optimizer)
+                .optInitializer(initializer, Parameter.Type.WEIGHT)
                 .addTrainingListeners(TrainingListener.Defaults.logging());
 
         return model.newTrainer(config);
@@ -90,6 +125,8 @@ public class ModelTrainer {
 
         SequentialBlock sequentialBlock = new SequentialBlock();
 
+        System.out.println(inputSize);
+
         sequentialBlock.add(Blocks.batchFlattenBlock(inputSize));
         sequentialBlock.add(Linear.builder().setUnits(256).build());
         sequentialBlock.add(Activation::relu);
@@ -102,7 +139,6 @@ public class ModelTrainer {
         Model model = Model.newInstance("mlp");
         model.setBlock(sequentialBlock);
         if (!create) model.load(modelDir);
-        ;
 
         return model;
     }

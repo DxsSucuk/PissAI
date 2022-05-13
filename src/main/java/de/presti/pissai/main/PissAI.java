@@ -9,12 +9,9 @@ import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
 import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
-import ai.djl.modality.cv.translator.BaseImageTranslator;
 import ai.djl.modality.cv.translator.ImageClassificationTranslator;
-import ai.djl.modality.cv.util.NDImageUtils;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDManager;
-import ai.djl.nn.LambdaBlock;
 import ai.djl.training.Trainer;
 import ai.djl.translate.TranslateException;
 import ai.djl.translate.Translator;
@@ -48,8 +45,11 @@ public class PissAI {
     }
 
     public static void main(String[] args) throws Exception {
-        // startCreation();
-        test(true);
+        if (args.length > 0 && args[0].equalsIgnoreCase("test")) {
+            test(true);
+        } else {
+            startCreation();
+        }
     }
 
     public static void test(boolean valid) throws TranslateException, IOException, MalformedModelException {
@@ -79,7 +79,7 @@ public class PissAI {
 
         Model model = instance.modelTrainer.getModel(imageFolder, true);
 
-        Trainer trainer = instance.modelTrainer.getTrainer(model, imageFolder);
+        Trainer trainer = instance.modelTrainer.getTrainer(model, imageFolder, new int[] { 12, 17, 23, 28},32);
 
         instance.modelTrainer.runTrainer(trainer, imageFolder, model);
 
