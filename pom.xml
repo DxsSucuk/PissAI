@@ -26,37 +26,27 @@
         <dependency>
             <groupId>ai.djl</groupId>
             <artifactId>api</artifactId>
-            <version>0.16.0</version>
+            <version>0.17.0</version>
         </dependency>
         <dependency>
             <groupId>ai.djl</groupId>
             <artifactId>basicdataset</artifactId>
-            <version>0.16.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ai.djl</groupId>
-            <artifactId>examples</artifactId>
-            <version>0.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ai.djl</groupId>
-            <artifactId>learningrate</artifactId>
-            <version>0.6.0</version>
+            <version>0.17.0</version>
         </dependency>
         <dependency>
             <groupId>ai.djl</groupId>
             <artifactId>model-zoo</artifactId>
-            <version>0.16.0</version>
+            <version>0.17.0</version>
         </dependency>
         <dependency>
             <groupId>ai.djl.tensorflow</groupId>
             <artifactId>tensorflow-model-zoo</artifactId>
-            <version>0.16.0</version>
+            <version>0.17.0</version>
         </dependency>
         <dependency>
             <groupId>ai.djl.mxnet</groupId>
             <artifactId>mxnet-engine</artifactId>
-            <version>0.16.0</version>
+            <version>0.17.0</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
@@ -76,7 +66,7 @@
         <dependency>
             <groupId>ai.djl.mxnet</groupId>
             <artifactId>mxnet-model-zoo</artifactId>
-            <version>0.16.0</version>
+            <version>0.17.0</version>
         </dependency>
         <dependency>
             <groupId>ai.djl.mxnet</groupId>
@@ -87,7 +77,7 @@
         <dependency>
             <groupId>ai.djl.pytorch</groupId>
             <artifactId>pytorch-model-zoo</artifactId>
-            <version>0.16.0</version>
+            <version>0.17.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
