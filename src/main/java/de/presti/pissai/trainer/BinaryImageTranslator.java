@@ -2,9 +2,6 @@ package de.presti.pissai.trainer;
 
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.translator.BaseImageTranslator;
-import ai.djl.modality.cv.translator.ImageClassificationTranslator;
-import ai.djl.modality.cv.util.NDImageUtils;
-import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDList;
 import ai.djl.translate.ArgumentsUtil;
 import ai.djl.translate.Batchifier;
@@ -22,13 +19,6 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
      */
     public BinaryImageTranslator(BaseBuilder<?> builder) {
         super(builder);
-    }
-
-    @Override
-    public NDList processInput(TranslatorContext ctx, Image input) {
-        // Convert Image to NDArray
-        NDArray array = input.toNDArray(ctx.getNDManager(), Image.Flag.COLOR);
-        return new NDList(NDImageUtils.toTensor(array));
     }
 
     @Override

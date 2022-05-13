@@ -103,7 +103,6 @@ public class PissAI {
                         .addTransform(new Resize(256, 256))
                         .addTransform(new ToTensor())
                         .addTransform(NDArray::squeeze)
-                        .optApplySoftmax(true)
                         .build();
 
         Predictor<Image, Float> predictor = model.newPredictor(translator);
