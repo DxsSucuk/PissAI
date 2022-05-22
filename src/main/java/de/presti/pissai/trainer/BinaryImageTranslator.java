@@ -23,12 +23,12 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
 
     @Override
     public Batchifier getBatchifier() {
-        return Batchifier.STACK;
+        return null;
     }
 
     @Override
     public Float processOutput(TranslatorContext ctx, NDList list) {
-        return list.singletonOrThrow().getFloat(0);
+        return list.singletonOrThrow().toFloatArray()[0];
     }
 
     @Override

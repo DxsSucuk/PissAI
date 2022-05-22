@@ -95,14 +95,14 @@ public class PissAI {
         String invalidImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Red.svg/2048px-Red.svg.png";
         String imageUrl = valid ? validImage : invalidImage;
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
-        imageToCheck = ImageFactory.getInstance().fromNDArray(imageToCheck.toNDArray(NDManager.newBaseManager()).squeeze());
-        Object wrappedImage = imageToCheck.getWrappedImage();
+        NDArray ndArray = imageToCheck.toNDArray(NDManager.newBaseManager()).squeeze();
+        imageToCheck = ImageFactory.getInstance().fromNDArray(ndArray);
 
         Translator<Image, Float> translator =
                 BinaryImageTranslator.builder()
                         .addTransform(new Resize(256, 256))
-                        .addTransform(new ToTensor())
                         .addTransform(NDArray::squeeze)
+                        .addTransform(new ToTensor())
                         .build();
 
         Predictor<Image, Float> predictor = model.newPredictor(translator);
