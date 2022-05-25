@@ -2,12 +2,14 @@ package de.presti.pissai.trainer;
 
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.translator.BaseImageTranslator;
+import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDList;
 import ai.djl.translate.ArgumentsUtil;
 import ai.djl.translate.Batchifier;
 import ai.djl.translate.Translator;
 import ai.djl.translate.TranslatorContext;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class BinaryImageTranslator extends BaseImageTranslator<Float> implements Translator<Image, Float> {
@@ -28,7 +30,11 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
 
     @Override
     public Float processOutput(TranslatorContext ctx, NDList list) {
-        return list.singletonOrThrow().toFloatArray()[0];
+        NDArray ndArray = list.singletonOrThrow();
+        ndArray = ndArray.softmax(0);
+        float[] array = ndArray.toFloatArray();
+        System.out.println(Arrays.toString(array));
+        return array[0];
     }
 
     @Override
