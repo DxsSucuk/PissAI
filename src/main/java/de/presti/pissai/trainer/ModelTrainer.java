@@ -144,7 +144,7 @@ public class ModelTrainer {
     }
 
     public void runTrainer(Trainer trainer, ImageFolder dataset, Model model) throws TranslateException, IOException {
-        int epochen = (int) dataset.size();
+        int epochen = (int) dataset.size() * 3;
         System.out.println("Using about " + epochen + " Epochs on " + dataset.size() + " Images.");
         trainer.initialize(new Shape(256 * 256 * 3));
 
