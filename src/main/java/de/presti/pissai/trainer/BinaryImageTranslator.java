@@ -2,14 +2,13 @@ package de.presti.pissai.trainer;
 
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.translator.BaseImageTranslator;
-import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDList;
+import ai.djl.nn.Activation;
 import ai.djl.translate.ArgumentsUtil;
 import ai.djl.translate.Batchifier;
 import ai.djl.translate.Translator;
 import ai.djl.translate.TranslatorContext;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class BinaryImageTranslator extends BaseImageTranslator<Float> implements Translator<Image, Float> {
@@ -30,11 +29,7 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
 
     @Override
     public Float processOutput(TranslatorContext ctx, NDList list) {
-        NDArray ndArray = list.singletonOrThrow();
-        ndArray = ndArray.softmax(0);
-        float[] array = ndArray.toFloatArray();
-        System.out.println(Arrays.toString(array));
-        return array[0];
+        return Activation.sigmoid(list.singletonOrThrow()).toFloatArray()[0];
     }
 
     @Override
@@ -43,7 +38,7 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
     }
 
     /**
-     * Creates a builder to build a {@code ImageClassificationTranslator}.
+     * Creates a builder to build a {@code BinaryImageTranslator}.
      *
      * @return a new builder
      */
@@ -52,7 +47,7 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
     }
 
     /**
-     * Creates a builder to build a {@code ImageClassificationTranslator} with specified arguments.
+     * Creates a builder to build a {@code BinaryImageTranslator} with specified arguments.
      *
      * @param arguments arguments to specify builder options
      * @return a new builder
@@ -67,33 +62,7 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
     /** A Builder to construct a {@code BinaryImageTranslator}. */
     public static class Builder extends BaseBuilder<Builder> {
 
-        private boolean applySoftmax;
-        private int topK = 5;
-
         Builder() {}
-
-        /**
-         * Set the topK number of classes to be displayed.
-         *
-         * @param topK the number of top classes to return
-         * @return the builder
-         */
-        public Builder optTopK(int topK) {
-            this.topK = topK;
-            return this;
-        }
-
-        /**
-         * Sets whether to apply softmax when processing output. Some models already include softmax
-         * in the last layer, so don't apply softmax when processing model output.
-         *
-         * @param applySoftmax boolean whether to apply softmax
-         * @return the builder
-         */
-        public Builder optApplySoftmax(boolean applySoftmax) {
-            this.applySoftmax = applySoftmax;
-            return this;
-        }
 
         /** {@inheritDoc} */
         @Override
@@ -105,8 +74,6 @@ public class BinaryImageTranslator extends BaseImageTranslator<Float> implements
         @Override
         protected void configPostProcess(Map<String, ?> arguments) {
             super.configPostProcess(arguments);
-            applySoftmax = ArgumentsUtil.booleanValue(arguments, "applySoftmax");
-            topK = ArgumentsUtil.intValue(arguments, "topK", 5);
         }
 
         /**

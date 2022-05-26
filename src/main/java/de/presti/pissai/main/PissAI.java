@@ -91,8 +91,8 @@ public class PissAI {
     }
 
     public void runTest(Model model, List<String> classes, boolean valid) throws IOException, TranslateException {
-        String validImage = "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Dream_icon.svg/1200px-Dream_icon.svg.png";
-        String invalidImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Red.svg/2048px-Red.svg.png";
+        String validImage = "https://i.scdn.co/image/ab6761610000e5eb78fc1f07ff7cb4a5552d2bec";
+        String invalidImage = "https://sase.org/wp-content/uploads/2019/04/red-abstract-2.png";
         String imageUrl = valid ? validImage : invalidImage;
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
         NDArray ndArray = imageToCheck.toNDArray(NDManager.newBaseManager()).squeeze();
@@ -108,77 +108,9 @@ public class PissAI {
         Predictor<Image, Float> predictor = model.newPredictor(translator);
 
         float classifications = predictor.predict(imageToCheck);
-        /*JsonElement jsonElement = JsonParser.parseString(classifications.toJson());
 
-        if (jsonElement.isJsonArray()) {
-            JsonArray jsonArray = jsonElement.getAsJsonArray();
-
-            String detected = "";
-            float highestValue = 0.0f;
-
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonElement jsonElement1 = jsonArray.get(i);
-                if (jsonElement1.isJsonObject()) {
-                    JsonObject jsonObject = jsonElement1.getAsJsonObject();
-
-                    String name = jsonObject.get("className").getAsString();
-                    float currentValue = jsonObject.get("probability").getAsFloat();
-
-                    System.out.println(name + " - " + Math.round(currentValue * 100) + "%");
-
-                    if (highestValue < currentValue) {
-                        highestValue = currentValue;
-                        detected = name;
-                    }
-                }
-              }
-            }*/
-
+        System.out.println(classifications);
         System.out.println("It is most likely dream, about " + Math.round(classifications * 100) + "%");
-    }
-
-    public JsonObject checkImage(Image image, Model model, List<String> classes) throws TranslateException {
-
-        Translator<Image, Classifications> translator =
-                ImageClassificationTranslator.builder()
-                        .addTransform(new Resize(256, 256))
-                        .addTransform(new ToTensor())
-                        .optSynset(classes)
-                        .optApplySoftmax(true)
-                        .build();
-
-        Predictor<Image, Classifications> predictor = model.newPredictor(translator);
-
-        Classifications classifications = predictor.predict(image);
-        JsonElement jsonElement = JsonParser.parseString(classifications.toJson());
-
-        if (jsonElement.isJsonArray()) {
-            JsonArray jsonArray = jsonElement.getAsJsonArray();
-
-            JsonObject detected = new JsonObject();
-            float highestValue = 0.0f;
-
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JsonElement jsonElement1 = jsonArray.get(i);
-                if (jsonElement1.isJsonObject()) {
-                    JsonObject jsonObject = jsonElement1.getAsJsonObject();
-
-                    String name = jsonObject.get("className").getAsString();
-                    float currentValue = jsonObject.get("probability").getAsFloat();
-
-                    System.out.println(name + " - " + Math.round(currentValue * 100) + "%");
-
-                    if (highestValue < currentValue) {
-                        highestValue = currentValue;
-                        detected = jsonObject;
-                    }
-                }
-            }
-
-            return detected;
-        }
-
-        return new JsonObject();
     }
 
     public static PissAI getInstance() {
