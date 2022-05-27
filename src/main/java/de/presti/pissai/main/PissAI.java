@@ -33,14 +33,12 @@ public class PissAI {
     ModelTrainer modelTrainer;
     ImageFolder imageFolder;
     Model model;
-    List<String> syncs = new ArrayList<>();
 
     public static void create() throws TranslateException, IOException, MalformedModelException {
         instance = new PissAI();
 
         instance.modelTrainer = new ModelTrainer();
         instance.imageFolder = instance.modelTrainer.createDataSet();
-        instance.syncs = instance.imageFolder.getSynset();
         instance.model = instance.modelTrainer.getModel(instance.imageFolder, false);
     }
 
@@ -54,7 +52,7 @@ public class PissAI {
 
     public static void test(boolean valid) throws TranslateException, IOException, MalformedModelException {
         create();
-        instance.runTest(instance.model, instance.syncs, valid);
+        instance.runTest(instance.model, valid);
     }
 
     public static void startCreation() throws Exception {
@@ -87,10 +85,10 @@ public class PissAI {
     }
 
     public Model loadPrevious() throws MalformedModelException, IOException {
-        return instance.modelTrainer.getModel(getSyncs().size(), false);
+        return instance.modelTrainer.getModel(1, false);
     }
 
-    public void runTest(Model model, List<String> classes, boolean valid) throws IOException, TranslateException {
+    public void runTest(Model model, boolean valid) throws IOException, TranslateException {
         String validImage = "https://i.scdn.co/image/ab6761610000e5eb78fc1f07ff7cb4a5552d2bec";
         String invalidImage = "https://sase.org/wp-content/uploads/2019/04/red-abstract-2.png";
         String imageUrl = valid ? validImage : invalidImage;
@@ -113,6 +111,19 @@ public class PissAI {
         System.out.println("It is most likely dream, about " + Math.round(classifications * 100) + "%");
     }
 
+    public float checkImage(Image imageToCheck) throws TranslateException {
+        imageToCheck = ImageFactory.getInstance().fromNDArray(imageToCheck.toNDArray(NDManager.newBaseManager()).squeeze());
+
+        Translator<Image, Float> translator =
+                BinaryImageTranslator.builder()
+                        .addTransform(new Resize(256, 256))
+                        .addTransform(NDArray::squeeze)
+                        .addTransform(new ToTensor())
+                        .build();
+
+        return model.newPredictor(translator).predict(imageToCheck);
+    }
+
     public static PissAI getInstance() {
         return instance;
     }
@@ -127,9 +138,5 @@ public class PissAI {
 
     public Model getModel() {
         return model;
-    }
-
-    public List<String> getSyncs() {
-        return syncs;
     }
 }
