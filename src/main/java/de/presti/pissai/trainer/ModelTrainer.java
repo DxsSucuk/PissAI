@@ -70,7 +70,7 @@ public class ModelTrainer {
                         .setSampling(batchSize, true)
                         .build();
         // call prepare before using
-        dataset.prepare();
+        dataset.prepare(new ProgressBar());
 
         return dataset;
     }
