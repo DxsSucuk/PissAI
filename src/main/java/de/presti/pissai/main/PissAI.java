@@ -4,28 +4,20 @@ import ai.djl.MalformedModelException;
 import ai.djl.Model;
 import ai.djl.basicdataset.cv.classification.ImageFolder;
 import ai.djl.inference.Predictor;
-import ai.djl.modality.Classifications;
 import ai.djl.modality.cv.Image;
 import ai.djl.modality.cv.ImageFactory;
 import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
-import ai.djl.modality.cv.translator.ImageClassificationTranslator;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDManager;
 import ai.djl.training.Trainer;
 import ai.djl.translate.TranslateException;
 import ai.djl.translate.Translator;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.presti.pissai.trainer.BinaryImageTranslator;
 import de.presti.pissai.trainer.ModelTrainer;
 import de.presti.pissai.utils.TimeUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PissAI {
 

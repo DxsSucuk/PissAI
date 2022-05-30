@@ -4,6 +4,7 @@ import ai.djl.Application;
 import ai.djl.MalformedModelException;
 import ai.djl.Model;
 import ai.djl.basicdataset.cv.classification.ImageFolder;
+import ai.djl.metric.Metrics;
 import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
 import ai.djl.ndarray.NDArray;
@@ -25,6 +26,7 @@ import ai.djl.training.tracker.Tracker;
 import ai.djl.training.tracker.WarmUpTracker;
 import ai.djl.training.util.ProgressBar;
 import ai.djl.translate.TranslateException;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -144,13 +146,20 @@ public class ModelTrainer {
     }
 
     public void runTrainer(Trainer trainer, ImageFolder dataset, Model model) throws TranslateException, IOException {
-        int epochen = (int) dataset.size() * 3;
+        int epochen = (model.getProperty("Epoch") != null ?
+                Integer.parseInt(model.getProperty("Epoch")) : 0) + (int) dataset.size() * 3;
         System.out.println("Using about " + epochen + " Epochs on " + dataset.size() + " Images.");
+        trainer.setMetrics(new Metrics());
         trainer.initialize(new Shape(256 * 256 * 3));
 
         EasyTrain.fit(trainer, epochen, dataset, null);
 
         saveModel(model, epochen);
+
+        LoggerFactory.getLogger(this.getClass()).info("Train-Loss: " + trainer.getTrainingResult().getTrainLoss());
+        LoggerFactory.getLogger(this.getClass()).info("Valid-Loss: " + trainer.getTrainingResult().getValidateLoss());
+        LoggerFactory.getLogger(this.getClass()).info("Epochs: " + trainer.getTrainingResult().getEpoch());
+        LoggerFactory.getLogger(this.getClass()).info("Evals: " + trainer.getTrainingResult().getEvaluations());
     }
 
     public void saveModel(Model model, int epochen) throws IOException {
