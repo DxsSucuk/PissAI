@@ -1,6 +1,7 @@
 package de.presti.pissai.trainer;
 
 import ai.djl.Application;
+import ai.djl.Device;
 import ai.djl.MalformedModelException;
 import ai.djl.Model;
 import ai.djl.basicdataset.cv.classification.ImageFolder;
@@ -26,6 +27,7 @@ import ai.djl.training.tracker.Tracker;
 import ai.djl.training.tracker.WarmUpTracker;
 import ai.djl.training.util.ProgressBar;
 import ai.djl.translate.TranslateException;
+import de.presti.pissai.utils.DeviceUtil;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -113,6 +115,7 @@ public class ModelTrainer {
                 .addEvaluator(new BinaryAccuracy())
                 .optOptimizer(optimizer)
                 .optInitializer(initializer, Parameter.Type.WEIGHT)
+                // .optDevices(DeviceUtil.tryAllGpus())
                 .addTrainingListeners(TrainingListener.Defaults.logging());
 
         return model.newTrainer(config);

@@ -76,8 +76,8 @@ public class PissAI {
         return new Object[]{model, trainer};
     }
 
-    public Model loadPrevious() throws MalformedModelException, IOException {
-        return instance.modelTrainer.getModel(1, false);
+    public Model loadPrevious() throws MalformedModelException, IOException, TranslateException {
+        return instance.modelTrainer.getModel(instance.imageFolder.getSynset().size(), false);
     }
 
     public void runTest(Model model, boolean valid) throws IOException, TranslateException {
