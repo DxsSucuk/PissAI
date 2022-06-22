@@ -44,11 +44,6 @@
             <version>0.17.0</version>
         </dependency>
         <dependency>
-            <groupId>ai.djl.mxnet</groupId>
-            <artifactId>mxnet-engine</artifactId>
-            <version>0.17.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
             <artifactId>imageio-jpeg</artifactId>
             <version>3.8.2</version>
@@ -64,14 +59,9 @@
             <version>3.8.2</version>
         </dependency>
         <dependency>
-            <groupId>ai.djl.mxnet</groupId>
-            <artifactId>mxnet-model-zoo</artifactId>
+            <groupId>ai.djl.pytorch</groupId>
+            <artifactId>pytorch-engine</artifactId>
             <version>0.17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>ai.djl.mxnet</groupId>
-            <artifactId>mxnet-native-auto</artifactId>
-            <version>1.8.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -85,6 +75,33 @@
             <artifactId>pytorch-native-auto</artifactId>
             <version>1.9.1</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ai.djl.pytorch</groupId>
+            <artifactId>pytorch-native-cpu</artifactId>
+            <classifier>linux-x86_64</classifier>
+            <scope>runtime</scope>
+            <version>1.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ai.djl.pytorch</groupId>
+            <artifactId>pytorch-jni</artifactId>
+            <version>1.11.0-0.17.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ai.djl.pytorch</groupId>
+            <artifactId>pytorch-native-cu113</artifactId>
+            <classifier>win-x86_64</classifier>
+            <version>1.11.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ai.djl.pytorch</groupId>
+            <artifactId>pytorch-native-cpu</artifactId>
+            <classifier>win-x86_64</classifier>
+            <scope>runtime</scope>
+            <version>1.11.0</version>
         </dependency>
     </dependencies>
 

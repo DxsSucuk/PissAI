@@ -17,6 +17,10 @@ import de.presti.pissai.trainer.BinaryImageTranslator;
 import de.presti.pissai.trainer.ModelTrainer;
 import de.presti.pissai.utils.TimeUtil;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.File;
 import java.io.IOException;
 
 public class PissAI {
@@ -35,6 +39,7 @@ public class PissAI {
     }
 
     public static void main(String[] args) throws Exception {
+        testAllImages();
         if (args.length > 0 && args[0].equalsIgnoreCase("test")) {
             test(true);
         } else {
@@ -114,6 +119,52 @@ public class PissAI {
                         .build();
 
         return model.newPredictor(translator).predict(imageToCheck);
+    }
+
+    public static void testAllImages() {
+        if (new File("imagefolder").isDirectory()) {
+            checkFile(new File("imagefolder"));
+        }
+    }
+
+    private static void checkFile(File folder) {
+        if (folder == null || folder.listFiles() == null) return;
+        for (File file : folder.listFiles()) {
+            if (file.isDirectory()) {
+                checkFile(file);
+                continue;
+            }
+
+            try {
+                BufferedImage bufferedImage = ImageIO.read(file);
+                Image image = ImageFactory.getInstance().fromFile(file.toPath());
+                NDArray ndArray = image.toNDArray(NDManager.newBaseManager()).squeeze();
+
+                System.out.println(ndArray.getShape());
+
+                if (bufferedImage == null) {
+                    file.delete();
+                    System.out.println("Deleted " + file.getName() + ", cause null");
+                    continue;
+                }
+
+                if (bufferedImage.getWidth() < 256 || bufferedImage.getHeight() < 256) {
+                    file.delete();
+                    System.out.println("Deleted " + file.getName() + " Width: " + bufferedImage.getWidth() + ", Height: " + bufferedImage.getHeight());
+                } else {
+                    Raster ras = bufferedImage.getRaster();
+
+                    if (ras.getNumDataElements() != 3) {
+                        file.delete();
+                        System.out.println("Deleted " + file.getName() + " cause its not a 3 channel image instead its a " + ras.getNumDataElements() + " channel image");
+                    }
+                }
+            } catch (Exception exception) {
+                file.delete();
+                System.out.println("Deleted " + file.getName());
+                exception.printStackTrace();
+            }
+        }
     }
 
     public static PissAI getInstance() {
