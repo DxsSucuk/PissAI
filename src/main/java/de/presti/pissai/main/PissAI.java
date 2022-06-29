@@ -11,6 +11,7 @@ import ai.djl.modality.cv.transform.ToTensor;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDManager;
 import ai.djl.training.Trainer;
+import ai.djl.training.dataset.Batch;
 import ai.djl.translate.TranslateException;
 import ai.djl.translate.Translator;
 import de.presti.pissai.trainer.BinaryImageTranslator;
@@ -135,12 +136,21 @@ public class PissAI {
                 continue;
             }
 
+            if (file.getName().contains(" ")) {
+                File dest = new File(file.getParentFile(), file.getName().replace(" ", "_"));
+
+                if (file.renameTo(dest)) {
+                    file = dest;
+                    System.out.println("Renamed " + file.getName());
+                } else {
+                    System.out.println("Could not rename " + file.getName());
+                }
+            }
+
             try {
                 BufferedImage bufferedImage = ImageIO.read(file);
                 Image image = ImageFactory.getInstance().fromFile(file.toPath());
                 NDArray ndArray = image.toNDArray(NDManager.newBaseManager()).squeeze();
-
-                System.out.println(ndArray.getShape());
 
                 if (bufferedImage == null) {
                     file.delete();
