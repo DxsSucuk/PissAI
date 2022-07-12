@@ -128,9 +128,8 @@ public class ModelTrainer {
     public Model getModel(int outputSize, boolean create) throws MalformedModelException, IOException {
         long inputSize = 256 * 256 * 3;
 
-        SequentialBlock sequentialBlock = new SequentialBlock();
 
-        System.out.println(inputSize);
+        SequentialBlock sequentialBlock = new SequentialBlock();
 
         sequentialBlock.add(Blocks.batchFlattenBlock(inputSize));
         sequentialBlock.add(Linear.builder().setUnits(256).build());
@@ -138,7 +137,7 @@ public class ModelTrainer {
         sequentialBlock.add(Linear.builder().setUnits(128).build());
         sequentialBlock.add(Activation::relu);
         sequentialBlock.add(Linear.builder().setUnits(outputSize).build());
-        sequentialBlock.add(LambdaBlock.singleton(NDArray::squeeze));
+        sequentialBlock.addSingleton(a -> a.get(":, 1"));
 
         Path modelDir = Paths.get("datasets");
         Model model = Model.newInstance("mlp");
@@ -150,10 +149,10 @@ public class ModelTrainer {
 
     public void runTrainer(Trainer trainer, ImageFolder dataset, Model model) throws TranslateException, IOException {
         int epochen = (model.getProperty("Epoch") != null ?
-                Integer.parseInt(model.getProperty("Epoch")) : 0) + (int) dataset.size();
+                Integer.parseInt(model.getProperty("Epoch")) : 10);
         System.out.println("Using about " + epochen + " Epochs on " + dataset.size() + " Images.");
         trainer.setMetrics(new Metrics());
-        trainer.initialize(new Shape(256 * 256 * 3));
+        trainer.initialize(new Shape(32, 256 * 256 * 3));
 
         EasyTrain.fit(trainer, epochen, dataset, null);
 

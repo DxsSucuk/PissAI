@@ -40,7 +40,6 @@ public class PissAI {
     }
 
     public static void main(String[] args) throws Exception {
-        testAllImages();
         if (args.length > 0 && args[0].equalsIgnoreCase("test")) {
             test(true);
         } else {
@@ -106,7 +105,7 @@ public class PissAI {
         float classifications = predictor.predict(imageToCheck);
 
         System.out.println(classifications);
-        System.out.println("It is most likely dream, about " + Math.round(classifications * 100) + "%");
+        System.out.println("A confidence rate of " + Math.round(classifications * 100) + "% that it is dream.");
     }
 
     public float checkImage(Image imageToCheck) throws TranslateException {
