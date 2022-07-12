@@ -41,15 +41,16 @@ public class PissAI {
 
     public static void main(String[] args) throws Exception {
         if (args.length > 0 && args[0].equalsIgnoreCase("test")) {
-            test(true);
+            test();
         } else {
             startCreation();
         }
     }
 
-    public static void test(boolean valid) throws TranslateException, IOException, MalformedModelException {
+    public static void test() throws TranslateException, IOException, MalformedModelException {
         create();
-        instance.runTest(instance.model, valid);
+        instance.runTest(instance.model, false);
+        instance.runTest(instance.model, true);
     }
 
     public static void startCreation() throws Exception {
@@ -105,7 +106,8 @@ public class PissAI {
         float classifications = predictor.predict(imageToCheck);
 
         System.out.println(classifications);
-        System.out.println("A confidence rate of " + Math.round(classifications * 100) + "% that it is dream.");
+        System.out.println("A confidence rate of " + Math.round((1 - classifications) * 100) + "% that it is dream.");
+        System.out.println("Used Image: " + imageUrl);
     }
 
     public float checkImage(Image imageToCheck) throws TranslateException {
