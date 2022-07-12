@@ -91,19 +91,8 @@ public class PissAI {
         String invalidImage = "https://sase.org/wp-content/uploads/2019/04/red-abstract-2.png";
         String imageUrl = valid ? validImage : invalidImage;
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
-        NDArray ndArray = imageToCheck.toNDArray(NDManager.newBaseManager()).squeeze();
-        imageToCheck = ImageFactory.getInstance().fromNDArray(ndArray);
 
-        Translator<Image, Float> translator =
-                BinaryImageTranslator.builder()
-                        .addTransform(new Resize(256, 256))
-                        .addTransform(NDArray::squeeze)
-                        .addTransform(new ToTensor())
-                        .build();
-
-        Predictor<Image, Float> predictor = model.newPredictor(translator);
-
-        float classifications = predictor.predict(imageToCheck);
+        float classifications = checkImage(imageToCheck);
 
         System.out.println(classifications);
         System.out.println("A confidence rate of " + Math.round((1 - classifications) * 100) + "% that it is dream.");
@@ -120,18 +109,15 @@ public class PissAI {
                         .addTransform(new ToTensor())
                         .build();
 
-        return model.newPredictor(translator).predict(imageToCheck);
-    }
-
-    public static void testAllImages() {
-        if (new File("imagefolder").isDirectory()) {
-            checkFile(new File("imagefolder"));
-        }
+        // Using "1 - actualPrediction" keeps us from getting false positives, but gives us a lot of false negatives.
+        return (1 - model.newPredictor(translator).predict(imageToCheck));
     }
 
     private static void checkFile(File folder) {
-        if (folder == null || folder.listFiles() == null) return;
-        for (File file : folder.listFiles()) {
+        if (folder == null) return;
+        File[] files = folder.listFiles();
+        if (files == null) return;
+        for (File file : files) {
             if (file.isDirectory()) {
                 checkFile(file);
                 continue;
