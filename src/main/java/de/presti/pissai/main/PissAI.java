@@ -87,7 +87,7 @@ public class PissAI {
     }
 
     public void runTest(Model model, boolean valid) throws IOException, TranslateException {
-        String validImage = "https://i.scdn.co/image/ab6761610000e5eb78fc1f07ff7cb4a5552d2bec";
+        String validImage = "https://note-store.de/upload/iblock/5b1/Dream-_-MASK.jpg";
         String invalidImage = "https://sase.org/wp-content/uploads/2019/04/red-abstract-2.png";
         String imageUrl = valid ? validImage : invalidImage;
         Image imageToCheck = ImageFactory.getInstance().fromUrl(imageUrl);
