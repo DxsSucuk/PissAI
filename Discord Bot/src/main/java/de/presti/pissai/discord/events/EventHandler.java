@@ -39,7 +39,7 @@ public class EventHandler extends ListenerAdapter {
     }
 
     public void checkUser(User user, Guild guild) {
-        if (PissAI.getInstance() != null && user.isBot() && user.getAvatarUrl() != null) {
+        if (PissAI.getInstance() != null && !user.isBot() && user.getAvatarUrl() != null) {
             try {
 
                 final float[] probability = {PissAI.getInstance().checkImage(ImageFactory.getInstance().fromUrl(user.getAvatarUrl()))};
@@ -105,7 +105,7 @@ public class EventHandler extends ListenerAdapter {
                             if (privateChannelUser != null) {
                                 try {
                                     probability[0] = PissAI.getInstance().checkImage(ImageFactory.getInstance().fromUrl(privateChannelUser.getAvatarUrl()));
-
+                                    System.out.println("User with Dream PB changed, I am about, " + Math.round(probability[0] * 100) + "%! - " + privateChannelUser.getAsTag());
                                     if (probability[0] >= 0.87) {
                                         guild.kick(user).queue();
                                     } else {
@@ -135,7 +135,7 @@ public class EventHandler extends ListenerAdapter {
                     });
                 }
 
-                System.out.println("User with Dream PB joined, I am about, " + Math.round(probability[0] * 100) +"!");
+                System.out.println("User with Dream PB joined, I am about, " + Math.round(probability[0] * 100) + "%! - " + user.getAsTag());
             } catch (Exception exception) {
                 // TODO handle.
                 exception.printStackTrace();
