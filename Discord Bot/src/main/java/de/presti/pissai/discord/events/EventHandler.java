@@ -72,8 +72,8 @@ public class EventHandler extends ListenerAdapter {
                             long endTimeThread = startTimeThread + Duration.ofSeconds(30).toMillis();
 
                             User privateChannelUser = privateChannel.getUser();
-                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).setActionRows(ActionRow.of(new ButtonImpl("report", "Report false positiv.",
-                                    ButtonStyle.LINK, "https://presti.me", false, null))).complete();
+                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
+                                    ButtonStyle.LINK, "https://presti.me", false, null)).complete();
 
 
                             while (endTimeThread > System.currentTimeMillis()) {
@@ -93,8 +93,8 @@ public class EventHandler extends ListenerAdapter {
                                 if (finalImageUrl != null && !finalImageUrl.isEmpty())
                                     newEmbedBuilder.setThumbnail(finalImageUrl);
 
-                                message.editMessageEmbeds(newEmbedBuilder.build()).setActionRows(ActionRow.of(new ButtonImpl("report", "Report false positiv.",
-                                        ButtonStyle.LINK, "https://presti.me", false, null))).complete();
+                                message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
+                                        ButtonStyle.LINK, "https://presti.me", false, null)).complete();
 
                                 try {
                                     Thread.sleep(2000);
@@ -121,8 +121,8 @@ public class EventHandler extends ListenerAdapter {
                                         newEmbedBuilder.addField("**Probability:**", "100%", true);
                                         newEmbedBuilder.setThumbnail(privateChannelUser.getJDA().getSelfUser().getAvatarUrl());
                                         newEmbedBuilder.setFooter("Piss AI - v" + BotWorker.getBuild());
-                                        message.editMessageEmbeds(newEmbedBuilder.build()).setActionRows(ActionRow.of(new ButtonImpl("report", "Report false positiv.",
-                                                ButtonStyle.LINK, "https://presti.me", false, null))).complete();
+                                        message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
+                                                ButtonStyle.LINK, "https://presti.me", false, null)).complete();
                                     }
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
