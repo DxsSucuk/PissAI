@@ -1,7 +1,6 @@
 package de.presti.pissai.discord.events;
 
 import ai.djl.modality.cv.ImageFactory;
-import com.google.gson.JsonObject;
 import de.presti.pissai.discord.bot.BotWorker;
 import de.presti.pissai.main.PissAI;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -12,12 +11,8 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateAvatarEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.internal.interactions.component.ButtonImpl;
-import net.dv8tion.jda.internal.interactions.component.ModalImpl;
-import net.dv8tion.jda.internal.interactions.component.TextInputImpl;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -72,8 +67,8 @@ public class EventHandler extends ListenerAdapter {
                             long endTimeThread = startTimeThread + Duration.ofSeconds(30).toMillis();
 
                             User privateChannelUser = privateChannel.getUser();
-                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).setActionRows(ActionRow.of(new ButtonImpl("report", "Report false positiv.",
-                                    ButtonStyle.LINK, "https://presti.me", false, null))).complete();
+                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).addActionRow(new ButtonImpl("report", "Report false positiv.",
+                                    ButtonStyle.LINK, "https://presti.me", false, null)).complete();
 
 
                             while (endTimeThread > System.currentTimeMillis()) {
@@ -93,8 +88,8 @@ public class EventHandler extends ListenerAdapter {
                                 if (finalImageUrl != null && !finalImageUrl.isEmpty())
                                     newEmbedBuilder.setThumbnail(finalImageUrl);
 
-                                message.editMessageEmbeds(newEmbedBuilder.build()).setActionRows(ActionRow.of(new ButtonImpl("report", "Report false positiv.",
-                                        ButtonStyle.LINK, "https://presti.me", false, null))).complete();
+                                message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
+                                        ButtonStyle.LINK, "https://presti.me", false, null)).complete();
 
                                 try {
                                     Thread.sleep(2000);
@@ -121,8 +116,8 @@ public class EventHandler extends ListenerAdapter {
                                         newEmbedBuilder.addField("**Probability:**", "100%", true);
                                         newEmbedBuilder.setThumbnail(privateChannelUser.getJDA().getSelfUser().getAvatarUrl());
                                         newEmbedBuilder.setFooter("Piss AI - v" + BotWorker.getBuild());
-                                        message.editMessageEmbeds(newEmbedBuilder.build()).setActionRows(ActionRow.of(new ButtonImpl("report", "Report false positiv.",
-                                                ButtonStyle.LINK, "https://presti.me", false, null))).complete();
+                                        message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
+                                                ButtonStyle.LINK, "https://presti.me", false, null)).complete();
                                     }
                                 } catch (Exception exception) {
                                     exception.printStackTrace();

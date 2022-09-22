@@ -23,6 +23,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 public class PissAI {
 
@@ -40,10 +43,17 @@ public class PissAI {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length > 0 && args[0].equalsIgnoreCase("test")) {
-            test();
-        } else {
+        if (Arrays.asList(args).contains("--clean")) {
+            checkFile(new File("validation"));
+            checkFile(new File("imagefolder"));
+        }
+
+        if (Arrays.asList(args).contains("--train")) {
             startCreation();
+        }
+
+        if (Arrays.asList(args).contains("--test")) {
+            test();
         }
     }
 
@@ -110,7 +120,7 @@ public class PissAI {
                         .build();
 
         // Using "1 - actualPrediction" keeps us from getting false positives, but gives us a lot of false negatives.
-        return (1 - model.newPredictor(translator).predict(imageToCheck));
+        return model.newPredictor(translator).predict(imageToCheck);
     }
 
     private static void checkFile(File folder) {
@@ -141,25 +151,25 @@ public class PissAI {
 
                 if (bufferedImage == null) {
                     file.delete();
-                    System.out.println("Deleted " + file.getName() + ", cause null");
+                    System.out.println("Deleted " + file.getName() + ", reason null");
                     continue;
                 }
 
                 if (bufferedImage.getWidth() < 256 || bufferedImage.getHeight() < 256) {
                     file.delete();
-                    System.out.println("Deleted " + file.getName() + " Width: " + bufferedImage.getWidth() + ", Height: " + bufferedImage.getHeight());
+                    System.out.println("Deleted " + file.getName() + ", reason Width: " + bufferedImage.getWidth() + ", Height: " + bufferedImage.getHeight());
                 } else {
                     Raster ras = bufferedImage.getRaster();
 
                     if (ras.getNumDataElements() != 3) {
                         file.delete();
-                        System.out.println("Deleted " + file.getName() + " cause its not a 3 channel image instead its a " + ras.getNumDataElements() + " channel image");
+                        System.out.println("Deleted " + file.getName() + ", reason: not 3 channel image instead " + ras.getNumDataElements() + " channel image");
                     }
                 }
             } catch (Exception exception) {
                 file.delete();
-                System.out.println("Deleted " + file.getName());
-                exception.printStackTrace();
+                System.out.println("Deleted " + file.getName() + ", reason: " + exception.getMessage());
+                // exception.printStackTrace();
             }
         }
     }

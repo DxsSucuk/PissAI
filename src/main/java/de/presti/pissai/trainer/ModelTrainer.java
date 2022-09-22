@@ -1,16 +1,17 @@
 package de.presti.pissai.trainer;
 
 import ai.djl.Application;
-import ai.djl.Device;
 import ai.djl.MalformedModelException;
 import ai.djl.Model;
 import ai.djl.basicdataset.cv.classification.ImageFolder;
 import ai.djl.metric.Metrics;
 import ai.djl.modality.cv.transform.Resize;
 import ai.djl.modality.cv.transform.ToTensor;
-import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.types.Shape;
-import ai.djl.nn.*;
+import ai.djl.nn.Activation;
+import ai.djl.nn.Blocks;
+import ai.djl.nn.Parameter;
+import ai.djl.nn.SequentialBlock;
 import ai.djl.nn.core.Linear;
 import ai.djl.repository.Repository;
 import ai.djl.training.DefaultTrainingConfig;
@@ -27,7 +28,6 @@ import ai.djl.training.tracker.Tracker;
 import ai.djl.training.tracker.WarmUpTracker;
 import ai.djl.training.util.ProgressBar;
 import ai.djl.translate.TranslateException;
-import de.presti.pissai.utils.DeviceUtil;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class ModelTrainer {
         return dataset;
     }
 
-    public ImageFolder createDataSet() throws TranslateException, IOException {
+    public ImageFolder createDataSet() throws IOException {
         int batchSize = 32;
         // set the image folder path
         Repository repository = Repository.newInstance("folder", Paths.get("imagefolder"));
@@ -137,7 +137,7 @@ public class ModelTrainer {
         sequentialBlock.add(Linear.builder().setUnits(128).build());
         sequentialBlock.add(Activation::relu);
         sequentialBlock.add(Linear.builder().setUnits(outputSize).build());
-        sequentialBlock.addSingleton(a -> a.get(":, 1"));
+        sequentialBlock.addSingleton(a -> a.get(":, 0"));
 
         Path modelDir = Paths.get("datasets");
         Model model = Model.newInstance("mlp");
@@ -154,7 +154,7 @@ public class ModelTrainer {
         trainer.setMetrics(new Metrics());
         trainer.initialize(new Shape(32, 256 * 256 * 3));
 
-        EasyTrain.fit(trainer, epochen, dataset, null);
+        EasyTrain.fit(trainer, epochen, dataset, getValidationDataSet());
 
         saveModel(model, epochen);
 
