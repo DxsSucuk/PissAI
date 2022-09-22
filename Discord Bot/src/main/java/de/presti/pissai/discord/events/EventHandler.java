@@ -67,7 +67,7 @@ public class EventHandler extends ListenerAdapter {
                             long endTimeThread = startTimeThread + Duration.ofSeconds(30).toMillis();
 
                             User privateChannelUser = privateChannel.getUser();
-                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).addActionRow(new ButtonImpl("report", "Report false positiv.",
+                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
                                     ButtonStyle.LINK, "https://presti.me", false, null)).complete();
 
 
