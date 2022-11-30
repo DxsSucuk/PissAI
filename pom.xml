@@ -46,7 +46,7 @@
         <dependency>
             <groupId>ai.djl.tensorflow</groupId>
             <artifactId>tensorflow-model-zoo</artifactId>
-            <version>0.18.0</version>
+            <version>0.20.0</version>
         </dependency>
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
