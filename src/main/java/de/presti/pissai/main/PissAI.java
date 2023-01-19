@@ -59,8 +59,8 @@ public class PissAI {
 
     public static void test() throws TranslateException, IOException, MalformedModelException {
         create();
-        instance.runTest(instance.model, false);
-        instance.runTest(instance.model, true);
+        instance.runTest(false);
+        instance.runTest(true);
     }
 
     public static void startCreation() throws Exception {
@@ -96,7 +96,7 @@ public class PissAI {
         return instance.modelTrainer.getModel(instance.imageFolder.getSynset().size(), false);
     }
 
-    public void runTest(Model model, boolean valid) throws IOException, TranslateException {
+    public void runTest(boolean valid) throws IOException, TranslateException {
         String validImage = "https://note-store.de/upload/iblock/5b1/Dream-_-MASK.jpg";
         String invalidImage = "https://sase.org/wp-content/uploads/2019/04/red-abstract-2.png";
         String imageUrl = valid ? validImage : invalidImage;
