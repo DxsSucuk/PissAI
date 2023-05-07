@@ -1,4 +1,3 @@
-# Got this cool code from my friend Aether! (github/imAETHER)
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
@@ -80,7 +79,7 @@ model.compile(optimizer='adam',
 
 model.summary()
 
-epochs = 250
+epochs = 30
 
 history = model.fit(
     train_ds,
