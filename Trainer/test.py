@@ -15,7 +15,7 @@ img_width = 256
 
 class_names = ['dream', 'nondream']
 
-model = keras.models.load_model('saved/trained.h5')
+model = keras.models.load_model('../datasets/trained.h5')
 
 img = keras.utils.load_img(
     './validation/nondream/24754615-1-2-1.jpeg', target_size=(img_height, img_width)

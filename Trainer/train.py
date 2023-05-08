@@ -100,7 +100,7 @@ plt.legend(loc='lower right')
 plt.title('Training Accuracy & Loss')
 plt.show()
 
-model.save('saved/trained.h5')
+model.save('../datasets/trained.h5')
 print("[i] Model saved!")
 
 # Quick test of the model, use test.py for the sex
