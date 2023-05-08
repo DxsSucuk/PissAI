@@ -15,7 +15,8 @@ model = keras.models.load_model('../datasets/trained.h5')
 
 @app.route('/pissai')
 def pissai():
-    image_url = tf.keras.utils.get_file('Court', origin=request.args.get('imgUrl'))
+    queryImgUrl = request.args.get('imgUrl')
+    image_url = tf.keras.utils.get_file('Court', origin=queryImgUrl)
     img = keras.utils.load_img(
         image_url, target_size=(img_height, img_width)
     )
