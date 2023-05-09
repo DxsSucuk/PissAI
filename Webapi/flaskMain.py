@@ -1,5 +1,8 @@
 from flask import Flask, request
 import tensorflow as tf
+import random
+import string
+import PIL
 from tensorflow import keras
 
 app = Flask(__name__)
@@ -12,11 +15,23 @@ class_names = ['dream', 'nondream']
 
 model = keras.models.load_model('../datasets/trained.h5')
 
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_letters
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 @app.route('/pissai')
 def pissai():
-    queryImgUrl = request.args.get('imgUrl')
-    image_url = tf.keras.utils.get_file('Court', origin=queryImgUrl)
+    # queryImgUrl = request.args.get('imgUrl')
+
+    queryImgUrl = "http://ubuntuserver.local/share/ree6_banner_v2.4.0-v2.4.8.png"
+
+    if queryImgUrl is None:
+        return "This bitch empty!"
+
+    image_url = tf.keras.utils.get_file(get_random_string(5), origin=queryImgUrl)
+
     img = keras.utils.load_img(
         image_url, target_size=(img_height, img_width)
     )
@@ -25,8 +40,10 @@ def pissai():
     img_array = tf.expand_dims(img_array, 0)
 
     score = model.predict(img_array)[0]
+
     print(
         "This is {}, {:.2f} percent confidence."
         .format(class_names[int(score)], 100 * score)
     )
+
     return "This is {}, {:.2f} percent confidence.".format(class_names[int(score)], 100 * score)
