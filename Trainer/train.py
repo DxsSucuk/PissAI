@@ -19,21 +19,20 @@ physical_devices = tf.config.experimental.list_physical_devices('GPU')
 if len(physical_devices) > 0:
     tf.config.experimental.set_virtual_device_configuration(
         physical_devices[0],
-        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024*9)])
+        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024 * 9)])
     logical_devices = tf.config.experimental.list_logical_devices('GPU')
     print(len(physical_devices), "Physical GPUs,",
           len(logical_devices), "Logical GPUs")
 
-
 train_datagen = ImageDataGenerator(
-    rescale=1./255,
+    rescale=1. / 255,
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True
 )
 
 test_datagen = ImageDataGenerator(
-    rescale=1./255
+    rescale=1. / 255
 )
 
 train_ds = train_datagen.flow_from_directory(
@@ -118,5 +117,4 @@ class_names = ['dream', 'nondream']
 
 print(
     "This is {}, {:.2f} percent confidence."
-    .format(class_names[np.argmax(score)], 100 * np.max(score))
-)
+    .format(class_names[np.argmax(score)], 100 * np.max(score)))

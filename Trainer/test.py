@@ -26,7 +26,9 @@ plt.imshow(img)
 img_array = keras.utils.img_to_array(img)
 img_array = tf.expand_dims(img_array, 0)
 
-score = model.predict(img_array)[0]
+predictions = model.predict(img_array)
+score = predictions[0]
+scoreSoft = tf.nn.softmax(predictions[0])
 
 if score == 0:
     plt.xlabel('Dream')
@@ -36,5 +38,5 @@ elif score == 1:
 plt.show()
 print(
     "This is {}, {:.2f} percent confidence."
-    .format(class_names[int(score)], 100 * score)
+    .format(class_names[int(score)], 100 * np.max(scoreSoft))
 )

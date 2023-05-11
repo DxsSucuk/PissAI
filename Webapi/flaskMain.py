@@ -2,6 +2,7 @@ from flask import Flask, request
 import tensorflow as tf
 import random
 import string
+import numpy as np
 import PIL
 from tensorflow import keras
 
@@ -41,9 +42,8 @@ def pissai():
 
     score = model.predict(img_array)[0]
 
-    print(
-        "This is {}, {:.2f} percent confidence."
-        .format(class_names[int(score)], 100 * score)
-    )
+    formattedString = "This is {}, {:.2f} percent confidence.".format(class_names[int(score)], 100 * float(np.max(tf.nn.softmax(score))))
 
-    return "This is {}, {:.2f} percent confidence.".format(class_names[int(score)], 100 * score)
+    print(formattedString)
+
+    return formattedString
