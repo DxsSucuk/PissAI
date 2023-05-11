@@ -40,9 +40,11 @@ def pissai():
     img_array = keras.utils.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)
 
-    score = model.predict(img_array)[0]
+    predictions = model.predict(img_array)
+    score = predictions[0]
+    scoreSoft = tf.nn.softmax(predictions[0])
 
-    formattedString = "This is {}, {:.2f} percent confidence.".format(class_names[int(score)], 100 * float(np.max(tf.nn.softmax(score))))
+    formattedString = "This is {}, {:.2f} percent confidence.".format(class_names[int(score)], 100 * np.max(scoreSoft))
 
     print(formattedString)
 
