@@ -2,14 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>PissAI</artifactId>
-        <groupId>de.presti</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>Discord-Bot</artifactId>
+    <groupId>de.presti</groupId>
+    <artifactId>PissAI-Bot</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -26,21 +21,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>5.0.0-alpha.20</version>
+            <groupId>de.ree6</groupId>
+            <artifactId>Ree6-Base</artifactId>
+            <version>86a905e918</version>
         </dependency>
         <dependency>
-            <groupId>club.minnced</groupId>
-            <artifactId>discord-webhooks</artifactId>
-            <version>0.8.2</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
         </dependency>
-        <!-- Needed but InteliJ loads it from the Module list.
-        <dependency>
-            <groupId>com.github.DxsSucuk</groupId>
-            <artifactId>PissAI</artifactId>
-            <version>-SNAPSHOT</version>
-        </dependency>-->
     </dependencies>
 
 </project>

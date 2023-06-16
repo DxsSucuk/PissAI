@@ -1,44 +1,57 @@
 package de.presti.pissai.discord.events;
 
-import ai.djl.modality.cv.ImageFactory;
-import de.presti.pissai.discord.bot.BotWorker;
-import de.presti.pissai.main.PissAI;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import de.presti.ree6.bot.BotWorker;
+import de.presti.ree6.util.external.RequestUtility;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateAvatarEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import net.dv8tion.jda.internal.interactions.component.ButtonImpl;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.time.Duration;
 
 public class EventHandler extends ListenerAdapter {
 
+    String url;
+
     @Override
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         super.onGuildMemberJoin(event);
         checkUser(event.getUser(), event.getGuild());
     }
 
     @Override
-    public void onGuildMemberUpdateAvatar(@NotNull GuildMemberUpdateAvatarEvent event) {
+    public void onGuildMemberUpdateAvatar(GuildMemberUpdateAvatarEvent event) {
         super.onGuildMemberUpdateAvatar(event);
         checkUser(event.getUser(), event.getGuild());
     }
 
     public void checkUser(User user, Guild guild) {
-        if (PissAI.getInstance() != null && !user.isBot() && user.getAvatarUrl() != null) {
+        if (!user.isBot() && user.getAvatarUrl() != null) {
             try {
 
-                final float[] probability = {PissAI.getInstance().checkImage(ImageFactory.getInstance().fromUrl(user.getAvatarUrl()))};
+                final float[] probability = { 0,0 };
 
+                final JsonObject[] jsonElement = {RequestUtility.requestJson(RequestUtility.Request.builder().url(url + "?imgUrl=" + user.getAvatarUrl()).build()).getAsJsonObject()};
+
+                final boolean[] isClassDream = {jsonElement[0].getAsJsonPrimitive("class").getAsString().equalsIgnoreCase("dream")};
+                final float[] percs = {jsonElement[0].getAsJsonPrimitive("percs").getAsFloat()};
+
+                if (isClassDream[0]) {
+                    probability[0] = percs[0];
+                    probability[1] = 1.0f - percs[0];
+                } else {
+                    probability[0] = 1.0f - percs[0];
+                    probability[1] = percs[0];
+                }
                 if (probability[0] >= 0.87) {
 
                     user.openPrivateChannel().queue(privateChannel -> {
@@ -67,8 +80,7 @@ public class EventHandler extends ListenerAdapter {
                             long endTimeThread = startTimeThread + Duration.ofSeconds(30).toMillis();
 
                             User privateChannelUser = privateChannel.getUser();
-                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
-                                    ButtonStyle.LINK, "https://presti.me", false, null)).complete();
+                            Message message = privateChannel.sendMessageEmbeds(embedBuilder.build()).setActionRow(Button.link("https://presti.me", "Report false positiv")).complete();
 
 
                             while (endTimeThread > System.currentTimeMillis()) {
@@ -99,7 +111,19 @@ public class EventHandler extends ListenerAdapter {
 
                             if (privateChannelUser != null) {
                                 try {
-                                    probability[0] = PissAI.getInstance().checkImage(ImageFactory.getInstance().fromUrl(privateChannelUser.getAvatarUrl()));
+                                    jsonElement[0] = RequestUtility.requestJson(RequestUtility.Request.builder().url(url + "?imgUrl=" + privateChannelUser.getAvatarUrl()).build()).getAsJsonObject();
+
+                                    isClassDream[0] = jsonElement[0].getAsJsonPrimitive("class").getAsString().equalsIgnoreCase("dream");
+                                    percs[0] = jsonElement[0].getAsJsonPrimitive("percs").getAsFloat();
+
+                                    if (isClassDream[0]) {
+                                        probability[0] = percs[0];
+                                        probability[1] = 1.0f - percs[0];
+                                    } else {
+                                        probability[0] = 1.0f - percs[0];
+                                        probability[1] = percs[0];
+                                    }
+
                                     System.out.println("User with Dream PB changed, I am about, " + Math.round(probability[0] * 100) + "%! - " + privateChannelUser.getAsTag());
                                     if (probability[0] >= 0.87) {
                                         guild.kick(user).queue();
@@ -132,14 +156,9 @@ public class EventHandler extends ListenerAdapter {
 
                 System.out.println("User with Dream PB joined, I am about, " + Math.round(probability[0] * 100) + "%! - " + user.getAsTag());
             } catch (Exception exception) {
-                // TODO handle.
+                // TODO:: handle.
                 exception.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void onButtonInteraction(@Nonnull ButtonInteractionEvent event) {
-        super.onButtonInteraction(event);
     }
 }

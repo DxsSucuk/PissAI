@@ -1,6 +1,6 @@
 import urllib
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import tensorflow as tf
 import random
 import string
@@ -28,7 +28,7 @@ def pissai():
     queryImgUrl = request.args.get('imgUrl')
 
     if queryImgUrl is None:
-        return "This bitch empty!"
+        return jsonify({'class': "nonedream", 'pecs': 1})
 
     image_url = tf.keras.utils.get_file(get_random_string(5), origin=queryImgUrl)
 
@@ -43,11 +43,14 @@ def pissai():
     score = predictions[0]
     scoreSoft = tf.nn.softmax(predictions[0])
 
-    formattedString = "This is {}, {:.2f} percent confidence.".format(class_names[int(score)], 100 * np.max(scoreSoft))
+    detectedClass = class_names[int(score)]
+    funnyPercs = np.max(scoreSoft)
+
+    formattedString = "This is {}, {:.2f} percent confidence.".format(detectedClass, funnyPercs)
 
     print(formattedString)
 
-    return formattedString
+    return jsonify({'class': detectedClass, 'pecs': funnyPercs})
 
 
 if __name__ == "__main__":

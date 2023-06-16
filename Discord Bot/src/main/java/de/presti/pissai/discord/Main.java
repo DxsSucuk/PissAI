@@ -1,44 +1,19 @@
 package de.presti.pissai.discord;
 
-import de.presti.pissai.discord.bot.BotWorker;
-import de.presti.pissai.discord.bot.version.BotVersion;
 import de.presti.pissai.discord.events.EventHandler;
-import de.presti.pissai.main.PissAI;
+import de.presti.ree6.bot.BotWorker;
+import de.presti.ree6.bot.version.BotVersion;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.logging.Logger;
-
+@Slf4j
 public class Main {
 
-    static Main instance;
-
-    Logger logger;
-
     public static void main(String[] args) {
-        instance = new Main();
-        instance.logger = Logger.getGlobal();
-
         try {
-            PissAI.create();
+            BotWorker.createBot(BotVersion.DEVELOPMENT_BUILD);
+            BotWorker.addEvent(new EventHandler());
         } catch (Exception exception) {
-            instance.logger.severe("Couldn't create Piss-AI Instance, " + exception.getMessage());
-            System.exit(-1);
+            log.error("Couldn't create BotInstance, " + exception.getMessage());
         }
-
-        try {
-            BotWorker.createBot("", BotVersion.DEV, "1.0.0");
-        } catch (Exception exception) {
-            instance.logger.severe("Couldn't create BotInstance, " + exception.getMessage());
-        }
-
-        BotWorker.addEvent(new EventHandler());
-
-    }
-
-    public static Main getInstance() {
-        return instance;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 }
