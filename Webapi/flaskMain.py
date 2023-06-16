@@ -1,3 +1,5 @@
+import urllib
+
 from flask import Flask, request
 import tensorflow as tf
 import random
@@ -21,12 +23,9 @@ def get_random_string(length):
     letters = string.ascii_letters
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
-
 @app.route('/pissai')
 def pissai():
-    # queryImgUrl = request.args.get('imgUrl')
-
-    queryImgUrl = "http://ubuntuserver.local/share/ree6_banner_v2.4.0-v2.4.8.png"
+    queryImgUrl = request.args.get('imgUrl')
 
     if queryImgUrl is None:
         return "This bitch empty!"
@@ -49,3 +48,7 @@ def pissai():
     print(formattedString)
 
     return formattedString
+
+
+if __name__ == "__main__":
+    app.run()
