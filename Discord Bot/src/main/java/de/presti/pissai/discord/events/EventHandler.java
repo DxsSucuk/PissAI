@@ -1,6 +1,5 @@
 package de.presti.pissai.discord.events;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.presti.ree6.bot.BotWorker;
 import de.presti.ree6.util.external.RequestUtility;
@@ -91,7 +90,7 @@ public class EventHandler extends ListenerAdapter {
                                 newEmbedBuilder.setTitle("Piss AI");
                                 newEmbedBuilder.setDescription("""
                                         Hello there, I am pretty sure that you have a Dream related profile picture!
-                                        Which is not wanted here, so please leave this Discord Server or be kicked, incase this is a false detection please contact a Staff.
+                                        Which is not wanted here, so please leave this Discord Server or be kicked, in case this is a false detection please contact a Staff.
                                         """);
                                 newEmbedBuilder.addField("**Time until kick:**", leftSeconds + "s", true);
                                 newEmbedBuilder.addField("**Detected:**", "Dream", true);
@@ -100,8 +99,7 @@ public class EventHandler extends ListenerAdapter {
                                 if (finalImageUrl != null && !finalImageUrl.isEmpty())
                                     newEmbedBuilder.setThumbnail(finalImageUrl);
 
-                                message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
-                                        ButtonStyle.LINK, "https://presti.me", false, null)).complete();
+                                message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(Button.link("https://presti.me", "Report false positiv")).complete();
 
                                 try {
                                     Thread.sleep(2000);
@@ -140,8 +138,7 @@ public class EventHandler extends ListenerAdapter {
                                         newEmbedBuilder.addField("**Probability:**", "100%", true);
                                         newEmbedBuilder.setThumbnail(privateChannelUser.getJDA().getSelfUser().getAvatarUrl());
                                         newEmbedBuilder.setFooter("Piss AI - v" + BotWorker.getBuild());
-                                        message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(new ButtonImpl("report", "Report false positiv.",
-                                                ButtonStyle.LINK, "https://presti.me", false, null)).complete();
+                                        message.editMessageEmbeds(newEmbedBuilder.build()).setActionRow(Button.link("https://presti.me", "Report false positiv")).complete();
                                     }
                                 } catch (Exception exception) {
                                     exception.printStackTrace();
