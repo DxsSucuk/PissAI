@@ -11,15 +11,13 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateAvatarEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
-import net.dv8tion.jda.internal.interactions.component.ButtonImpl;
 
 import java.awt.*;
 import java.time.Duration;
 
 public class EventHandler extends ListenerAdapter {
 
-    String url;
+    String url = "http://127.0.0.1:5000/pissai";
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
@@ -42,7 +40,7 @@ public class EventHandler extends ListenerAdapter {
                 final JsonObject[] jsonElement = {RequestUtility.requestJson(RequestUtility.Request.builder().url(url + "?imgUrl=" + user.getAvatarUrl()).build()).getAsJsonObject()};
 
                 final boolean[] isClassDream = {jsonElement[0].getAsJsonPrimitive("class").getAsString().equalsIgnoreCase("dream")};
-                final float[] percs = {jsonElement[0].getAsJsonPrimitive("percs").getAsFloat()};
+                final float[] percs = {jsonElement[0].getAsJsonPrimitive("pecs").getAsFloat()};
 
                 if (isClassDream[0]) {
                     probability[0] = percs[0];
@@ -112,7 +110,7 @@ public class EventHandler extends ListenerAdapter {
                                     jsonElement[0] = RequestUtility.requestJson(RequestUtility.Request.builder().url(url + "?imgUrl=" + privateChannelUser.getAvatarUrl()).build()).getAsJsonObject();
 
                                     isClassDream[0] = jsonElement[0].getAsJsonPrimitive("class").getAsString().equalsIgnoreCase("dream");
-                                    percs[0] = jsonElement[0].getAsJsonPrimitive("percs").getAsFloat();
+                                    percs[0] = jsonElement[0].getAsJsonPrimitive("pecs").getAsFloat();
 
                                     if (isClassDream[0]) {
                                         probability[0] = percs[0];

@@ -18,22 +18,33 @@ class_names = ['dream', 'nondream']
 
 model = keras.models.load_model('../datasets/trained.h5')
 
+
 def get_random_string(length):
     # choose from all lowercase letter
     letters = string.ascii_letters
     result_str = ''.join(random.choice(letters) for i in range(length))
     return result_str
+
+
+def downloadFile(name, url):
+    print(url)
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-agent',
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36')]
+    urllib.request.install_opener(opener)
+    urllib.request.urlretrieve(url, name + ".jpg")
+    return name + ".jpg"
+
+
 @app.route('/pissai')
 def pissai():
     queryImgUrl = request.args.get('imgUrl')
 
     if queryImgUrl is None:
-        return jsonify({'class': "nonedream", 'pecs': 1})
-
-    image_url = tf.keras.utils.get_file(get_random_string(5), origin=queryImgUrl)
+        return jsonify({'class': "nonedream", 'pecs': str(1)})
 
     img = keras.utils.load_img(
-        image_url, target_size=(img_height, img_width)
+        downloadFile(get_random_string(5), queryImgUrl), target_size=(img_height, img_width)
     )
 
     img_array = keras.utils.img_to_array(img)
@@ -50,7 +61,7 @@ def pissai():
 
     print(formattedString)
 
-    return jsonify({'class': detectedClass, 'pecs': funnyPercs})
+    return jsonify({'class': detectedClass, 'pecs': str(funnyPercs)})
 
 
 if __name__ == "__main__":
