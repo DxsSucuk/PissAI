@@ -33,7 +33,7 @@
         <dependency>
             <groupId>club.minnced</groupId>
             <artifactId>discord-webhooks</artifactId>
-            <version>0.8.2</version>
+            <version>0.8.3</version>
         </dependency>
         <!-- Needed but InteliJ loads it from the Module list.
         <dependency>
